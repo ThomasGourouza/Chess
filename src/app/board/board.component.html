@@ -1,0 +1,47 @@
+<div class="container">
+  <div class="row">
+    <div class="col-2">
+      <div *ngIf="!!selectedSquare">
+        <h3>
+          Case:
+          {{
+            selectedSquare.position.column.name +
+              selectedSquare.position.row.value
+          }}
+        </h3>
+        <b *ngIf="!!selectedSquare.figure">
+          Pièce sur la case: {{ selectedSquare.figure.color }}
+          {{ selectedSquare.figure.name }} ({{ selectedSquare.figure.value }})
+        </b>
+      </div>
+    </div>
+    <div class="col">
+      <div class="col-10">
+        <table>
+          <tr *ngFor="let rowToDisplay of boardToDisplay">
+            <td *ngFor="let squareToDisplay of rowToDisplay">
+              <div
+                class="content"
+                [ngClass]="{
+                  white: isWhiteSquare(squareToDisplay),
+                  black: !isWhiteSquare(squareToDisplay)
+                }"
+                (click)="onClick(squareToDisplay)"
+              >
+                <h1
+                  *ngIf="!!squareToDisplay.figure"
+                  class="d-flex justify-content-center align-items-center"
+                  [ngClass]="{
+                    whiteFont: isWhiteFigure(squareToDisplay.figure),
+                    blackFont: !isWhiteFigure(squareToDisplay.figure)
+                  }"
+                  >{{ squareToDisplay.figure.code }}</h1
+                >
+              </div>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

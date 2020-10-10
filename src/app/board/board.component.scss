@@ -1,0 +1,37 @@
+table {
+  width: 90%;
+  border-collapse: collapse;
+  border: 1px solid black;
+}
+td {
+  width: 12.5%;
+  position: relative;
+  border: 1px solid black;
+}
+td:after {
+  content: "";
+  display: block;
+  margin-top: 100%;
+}
+h1:hover {
+  color: green;
+}
+td .content {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+.black {
+  background: rgb(16, 40, 175);
+}
+.white {
+  background: rgb(162, 174, 255);
+}
+.blackFont {
+  color: rgb(0, 0, 0);
+}
+.whiteFont {
+  color: rgb(238, 238, 238);
+}
