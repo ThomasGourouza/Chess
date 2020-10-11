@@ -13,9 +13,6 @@ td:after {
   display: block;
   margin-top: 100%;
 }
-h1:hover {
-  color: green;
-}
 td .content {
   position: absolute;
   top: 0;
@@ -23,11 +20,20 @@ td .content {
   left: 0;
   right: 0;
 }
+.content:hover {
+  background: green;
+}
 .black {
   background: rgb(16, 40, 175);
 }
 .white {
   background: rgb(162, 174, 255);
+}
+.green {
+  background: green;
+}
+.red {
+  background: red;
 }
 .blackFont {
   color: rgb(0, 0, 0);

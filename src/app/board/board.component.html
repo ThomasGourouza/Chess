@@ -18,13 +18,15 @@
     <div class="col">
       <div class="col-10">
         <table>
-          <tr *ngFor="let rowToDisplay of boardToDisplay">
+          <tr *ngFor="let rowToDisplay of mapBoardForDisplay(board)">
             <td *ngFor="let squareToDisplay of rowToDisplay">
               <div
                 class="content"
                 [ngClass]="{
                   white: isWhiteSquare(squareToDisplay),
-                  black: !isWhiteSquare(squareToDisplay)
+                  black: isBlackSquare(squareToDisplay),
+                  green: isGreenSquare(squareToDisplay),
+                  red: isRedSquare(squareToDisplay)
                 }"
                 (click)="onClick(squareToDisplay)"
               >
@@ -33,10 +35,11 @@
                   class="d-flex justify-content-center align-items-center"
                   [ngClass]="{
                     whiteFont: isWhiteFigure(squareToDisplay.figure),
-                    blackFont: !isWhiteFigure(squareToDisplay.figure)
+                    blackFont: isBlackFigure(squareToDisplay.figure)
                   }"
-                  >{{ squareToDisplay.figure.code }}</h1
                 >
+                  {{ squareToDisplay.figure.code }}
+                </h1>
               </div>
             </td>
           </tr>

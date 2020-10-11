@@ -10,7 +10,6 @@ import { Color, Figure, FigureService } from './services/figure.service';
 export class BoardComponent implements OnInit {
   public figures: Array<Figure>;
   public board: Array<Square>;
-  public boardToDisplay: Array<Array<Square>>;
   public selectedSquare: Square;
 
   constructor(
@@ -29,27 +28,59 @@ export class BoardComponent implements OnInit {
     this.board = this.boardService.getBoard();
     // Placement des pièces sur l'échiquier
     this.setFiguresOnBoard();
-    // Initialisation de l'échiquier IHM
-    this.boardToDisplay = this.mapBoardForDisplay(this.board);
+    // Initialisation de la pièce selectionnée
+    this.selectedSquare = null;
   }
 
   public ngOnInit(): void {
     console.log(this.figures);
     console.log(this.board);
-    console.log(this.boardToDisplay);
   }
 
   public isWhiteSquare(square: Square): boolean {
     return square.color === Color.White;
   }
 
+  public isBlackSquare(square: Square): boolean {
+    return square.color === Color.Black;
+  }
+
+  public isGreenSquare(square: Square): boolean {
+    return square.color === Color.Green;
+  }
+
+  public isRedSquare(square: Square): boolean {
+    return square.color === Color.Red;
+  }
+
   public isWhiteFigure(figure: Figure): boolean {
     return figure.color === Color.White;
   }
 
+  public isBlackFigure(figure: Figure): boolean {
+    return figure.color === Color.Black;
+  }
+
   public onClick(square: Square): void {
-    this.selectedSquare = square;
-    console.log(this.selectedSquare);
+    if (this.selectedSquare != null && this.selectedSquare.figure != null) {
+      // Remise des couleurs d'origine des cases
+      this.boardService.resetBoardColors(this.board);
+      if (!this.equalSquares(this.selectedSquare, square)) {
+        // Ajout de la pièce sur la case d'arrivée
+        this.board.find((s) =>
+          this.equalSquares(s, square)
+        ).figure = this.selectedSquare.figure;
+        // Suppression de la piece de la case de départ
+        this.board.find((s) =>
+          this.equalSquares(s, this.selectedSquare)
+        ).figure = null;
+      }
+      // Réinitialisation de la case sélectionnée
+      this.selectedSquare = null;
+    } else if (square.figure != null) {
+      this.selectedSquare = square;
+      this.board.find((s) => this.equalSquares(s, square)).color = Color.Green;
+    }
   }
 
   public mapBoardForDisplay(board: Array<Square>): Array<Array<Square>> {
@@ -134,6 +165,13 @@ export class BoardComponent implements OnInit {
       figure.isAlive &&
       figure.position.column.value === square.position.column.value &&
       figure.position.row.value === square.position.row.value
+    );
+  }
+
+  private equalSquares(square1: Square, square2: Square): boolean {
+    return (
+      square1.position.column.value === square2.position.column.value &&
+      square1.position.row.value === square2.position.row.value
     );
   }
 

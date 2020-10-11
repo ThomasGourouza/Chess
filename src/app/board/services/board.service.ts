@@ -7,7 +7,7 @@ import { Color, Figure, FigureService, Position } from './figure.service';
 export class BoardService {
   constructor(private figureService: FigureService) {}
 
-  getBoard(): Array<Square> {
+  public getBoard(): Array<Square> {
     const board = [];
     for (let row = 1; row <= 8; row++) {
       for (let column = 1; column <= 8; column++) {
@@ -25,6 +25,15 @@ export class BoardService {
       }
     }
     return board;
+  }
+
+  public resetBoardColors(board: Array<Square>): void {
+    board.map((square) => {
+      square.color =
+        (square.position.row.value + square.position.column.value) % 2 === 0
+          ? Color.Black
+          : Color.White;
+    });
   }
 }
 export interface Square {

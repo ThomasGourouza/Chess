@@ -120,6 +120,8 @@ export interface Figure {
 export enum Color {
   Black = 'BLACK',
   White = 'WHITE',
+  Green = 'GREEN',
+  Red = 'RED',
 }
 export enum FigureName {
   pawn = 'PAWN',
