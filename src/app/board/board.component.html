@@ -1,50 +1,23 @@
 <div class="container">
   <div class="row">
     <div class="col-2">
-      <div *ngIf="!!selectedSquare">
-        <h3>
-          Case:
-          {{
-            selectedSquare.position.column.name +
-              selectedSquare.position.row.value
-          }}
-        </h3>
-        <b *ngIf="!!selectedSquare.figure">
-          Pièce sur la case: {{ selectedSquare.figure.color }}
-          {{ selectedSquare.figure.name }} ({{ selectedSquare.figure.value }})
-        </b>
-      </div>
+      <app-info [selectedSquare]="selectedSquare"></app-info>
     </div>
     <div class="col">
       <div class="col-10">
-        <table>
-          <tr *ngFor="let rowToDisplay of mapBoardForDisplay(board)">
-            <td *ngFor="let squareToDisplay of rowToDisplay">
-              <div
-                class="content"
-                [ngClass]="{
-                  white: isWhiteSquare(squareToDisplay),
-                  black: isBlackSquare(squareToDisplay),
-                  green: isGreenSquare(squareToDisplay),
-                  red: isRedSquare(squareToDisplay)
-                }"
-                (click)="onClick(squareToDisplay)"
-              >
-                <h1
-                  *ngIf="!!squareToDisplay.figure"
-                  class="d-flex justify-content-center align-items-center"
-                  [ngClass]="{
-                    whiteFont: isWhiteFigure(squareToDisplay.figure),
-                    blackFont: isBlackFigure(squareToDisplay.figure)
-                  }"
-                >
-                  {{ squareToDisplay.figure.code }}
-                </h1>
-              </div>
-            </td>
-          </tr>
-        </table>
+        <app-basic-board
+          [board]="board"
+          [selectedSquare]="selectedSquare"
+          (squareSelectEmitter)="onSquareSelect($event)"
+        ></app-basic-board>
       </div>
     </div>
   </div>
 </div>
+<br />
+<div class="d-flex justify-content-center">
+  <button type="button" class="btn btn-success" (click)="showSelectedSquare()">
+    voir selectedSquare
+  </button>
+</div>
+<br />

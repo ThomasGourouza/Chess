@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Square } from './board.service';
 
 @Injectable({
   providedIn: 'root',
@@ -106,6 +107,14 @@ export class FigureService {
       }
     }
     return name;
+  }
+
+  public isFigureOnSquare(figure: Figure, square: Square): boolean {
+    return (
+      figure.isAlive &&
+      figure.position.column.value === square.position.column.value &&
+      figure.position.row.value === square.position.row.value
+    );
   }
 }
 

@@ -1,0 +1,27 @@
+<table>
+  <tr *ngFor="let rowToDisplay of mapBoardForDisplay(board)">
+    <td *ngFor="let squareToDisplay of rowToDisplay">
+      <div
+        class="content"
+        [ngClass]="{
+          white: isWhiteSquare(squareToDisplay),
+          black: isBlackSquare(squareToDisplay),
+          green: isGreenSquare(squareToDisplay),
+          red: isRedSquare(squareToDisplay)
+        }"
+        (click)="onClick(squareToDisplay)"
+      >
+        <h1
+          *ngIf="!!squareToDisplay.figure"
+          class="d-flex justify-content-center align-items-center"
+          [ngClass]="{
+            whiteFont: isWhiteFigure(squareToDisplay.figure),
+            blackFont: isBlackFigure(squareToDisplay.figure)
+          }"
+        >
+          {{ squareToDisplay.figure.code }}
+        </h1>
+      </div>
+    </td>
+  </tr>
+</table>
