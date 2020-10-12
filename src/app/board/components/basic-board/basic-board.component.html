@@ -4,10 +4,11 @@
       <div
         class="content"
         [ngClass]="{
-          white: isWhiteSquare(squareToDisplay),
-          black: isBlackSquare(squareToDisplay),
-          green: isGreenSquare(squareToDisplay),
-          red: isRedSquare(squareToDisplay)
+          white: isColored(squareToDisplay.color, 'white'),
+          black: isColored(squareToDisplay.color, 'black'),
+          green: isColored(squareToDisplay.color, 'green'),
+          red: isColored(squareToDisplay.color, 'red'),
+          blue: isColored(squareToDisplay.color, 'blue')
         }"
         (click)="onClick(squareToDisplay)"
       >
@@ -15,8 +16,8 @@
           *ngIf="!!squareToDisplay.figure"
           class="d-flex justify-content-center align-items-center"
           [ngClass]="{
-            whiteFont: isWhiteFigure(squareToDisplay.figure),
-            blackFont: isBlackFigure(squareToDisplay.figure)
+            whiteFont: isColored(squareToDisplay.figure.color, 'white'),
+            blackFont: isColored(squareToDisplay.figure.color, 'black')
           }"
         >
           {{ squareToDisplay.figure.code }}
@@ -25,3 +26,4 @@
     </td>
   </tr>
 </table>
+<br />

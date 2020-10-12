@@ -15,11 +15,14 @@ export class BasicBoardComponent implements OnInit {
   @Output()
   public squareSelectEmitter: EventEmitter<Square> = new EventEmitter<Square>();
 
+  public test: string;
+
   constructor(private boardService: BoardService) {}
 
   ngOnInit(): void {}
 
   public onClick(square: Square): void {
+    // deuxième click
     if (this.selectedSquare != null && this.selectedSquare.figure != null) {
       // Remise des couleurs d'origine des cases
       this.boardService.resetBoardColors(this.board);
@@ -35,9 +38,12 @@ export class BasicBoardComponent implements OnInit {
       }
       // Réinitialisation de la case sélectionnée
       this.selectedSquare = null;
+      // premier click
     } else if (square.figure != null) {
       this.selectedSquare = square;
-      this.board.find((s) => this.equalSquares(s, square)).color = Color.Green;
+      this.board.find((s) => this.equalSquares(s, square)).color = Color.blue;
+      // Colore les cases possibles
+      this.boardService.colorPossibleSquares(this.board);
     }
     this.squareSelectEmitter.emit(this.selectedSquare);
   }
@@ -64,27 +70,33 @@ export class BasicBoardComponent implements OnInit {
     return boardToDisplay;
   }
 
-  public isWhiteSquare(square: Square): boolean {
-    return square.color === Color.White;
-  }
-
-  public isBlackSquare(square: Square): boolean {
-    return square.color === Color.Black;
-  }
-
-  public isGreenSquare(square: Square): boolean {
-    return square.color === Color.Green;
-  }
-
-  public isRedSquare(square: Square): boolean {
-    return square.color === Color.Red;
-  }
-
-  public isWhiteFigure(figure: Figure): boolean {
-    return figure.color === Color.White;
-  }
-
-  public isBlackFigure(figure: Figure): boolean {
-    return figure.color === Color.Black;
+  public isColored(squareColor: Color, color: string): boolean {
+    let isColored = false;
+    switch (color) {
+      case 'white': {
+        isColored = squareColor === Color.white;
+        break;
+      }
+      case 'black': {
+        isColored = squareColor === Color.black;
+        break;
+      }
+      case 'green': {
+        isColored = squareColor === Color.green;
+        break;
+      }
+      case 'red': {
+        isColored = squareColor === Color.red;
+        break;
+      }
+      case 'blue': {
+        isColored = squareColor === Color.blue;
+        break;
+      }
+      default: {
+        break;
+      }
+    }
+    return isColored;
   }
 }

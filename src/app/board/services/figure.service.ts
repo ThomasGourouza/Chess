@@ -127,10 +127,11 @@ export interface Figure {
   position: Position;
 }
 export enum Color {
-  Black = 'BLACK',
-  White = 'WHITE',
-  Green = 'GREEN',
-  Red = 'RED',
+  black = 'BLACK',
+  white = 'WHITE',
+  green = 'GREEN',
+  red = 'RED',
+  blue = 'BLUE',
 }
 export enum FigureName {
   pawn = 'PAWN',
