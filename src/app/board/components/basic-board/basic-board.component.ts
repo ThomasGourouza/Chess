@@ -26,15 +26,13 @@ export class BasicBoardComponent implements OnInit {
     if (this.selectedSquare != null && this.selectedSquare.figure != null) {
       // Remise des couleurs d'origine des cases
       this.boardService.resetBoardColors(this.board);
-      if (!this.equalSquares(this.selectedSquare, square)) {
-        // Ajout de la pièce sur la case d'arrivée
-        this.board.find((s) =>
-          this.equalSquares(s, square)
-        ).figure = this.selectedSquare.figure;
-        // Suppression de la piece de la case de départ
-        this.board.find((s) =>
-          this.equalSquares(s, this.selectedSquare)
-        ).figure = null;
+      // Si la case sélectionnée est autorisée
+      if (
+        this.boardService
+          .possibleSquaresForFigure(this.selectedSquare.figure, this.board)
+          .includes(square)
+      ) {
+        this.moveFigureOnBoard(this.selectedSquare, square, this.board);
       }
       // Réinitialisation de la case sélectionnée
       this.selectedSquare = null;
@@ -46,6 +44,21 @@ export class BasicBoardComponent implements OnInit {
       this.boardService.colorPossibleSquares(this.board);
     }
     this.squareSelectEmitter.emit(this.selectedSquare);
+  }
+
+  private moveFigureOnBoard(
+    originSquare: Square,
+    targetSquare: Square,
+    board: Array<Square>
+  ): void {
+    // Récupération de la pièce selectionée
+    const figure = originSquare.figure;
+    // modification de l'attribut "position" de la pièce
+    figure.position = targetSquare.position;
+    // Ajout de la pièce sur la case d'arrivée
+    board.find((s) => this.equalSquares(s, targetSquare)).figure = figure;
+    // Suppression de la piece de la case de départ
+    board.find((s) => this.equalSquares(s, originSquare)).figure = null;
   }
 
   private equalSquares(square1: Square, square2: Square): boolean {

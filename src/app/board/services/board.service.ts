@@ -42,33 +42,60 @@ export class BoardService {
     });
   }
 
-  public colorPossibleSquares(board: Array<Square>): void {
-    // Récupération de la case selectionnée
-    const selectedSquare = board.find((s) => s.color === Color.blue);
-    const selectedSquareRow = selectedSquare.position.row.value;
-    const selectedSquareColumn = selectedSquare.position.column.value;
-    // Récupération de la figure sélectionnée
-    const figure = selectedSquare.figure;
-    // this.resetBoardColors(board);
+  private pawnMoveCondition(
+    square: Square,
+    pawnColor: Color,
+    pawnRow: number,
+    pawnColumn: number
+  ): boolean {
+    return (
+      (pawnColor === Color.black &&
+        // pions noirs au départ
+        ((pawnRow === 7 &&
+          square.position.column.value === pawnColumn &&
+          [pawnRow - 1, pawnRow - 2].includes(square.position.row.value)) ||
+          // pions noirs déjà déplacés
+          (pawnRow < 7 &&
+            square.position.column.value === pawnColumn &&
+            pawnRow - 1 === square.position.row.value))) ||
+      (pawnColor === Color.white &&
+        // pions blancs au départ
+        ((pawnRow === 2 &&
+          square.position.column.value === pawnColumn &&
+          [pawnRow + 1, pawnRow + 2].includes(square.position.row.value)) ||
+          // pions blancs déjà déplacés
+          (pawnRow > 2 &&
+            square.position.column.value === pawnColumn &&
+            pawnRow + 1 === square.position.row.value)))
+    );
+  }
+
+  public possibleSquaresForFigure(
+    figure: Figure,
+    board: Array<Square>
+  ): Array<Square> {
+    // Récupération des coordonnées de la pièce
+    const figureRow = figure.position.row.value;
+    const figureColumn = figure.position.column.value;
     switch (figure.name) {
       case FigureName.pawn: {
-        board
-          .filter(
-            (square: Square) =>
-              square.position.column.value === selectedSquareColumn &&
-              [selectedSquareRow + 1, selectedSquareRow + 2].includes(
-                square.position.row.value
-              )
-          )
-          .map((square: Square) => {
-            square.color = Color.green;
-          });
-        break;
+        return board.filter((square: Square) =>
+          this.pawnMoveCondition(square, figure.color, figureRow, figureColumn)
+        );
       }
       default: {
-        break;
+        return [];
       }
     }
+  }
+
+  public colorPossibleSquares(board: Array<Square>): void {
+    // Récupération de la figure sélectionnée
+    const figure = board.find((s) => s.color === Color.blue).figure;
+    // Coloration de toutes les cases se destination possibles
+    this.possibleSquaresForFigure(figure, board).map((square: Square) => {
+      square.color = Color.green;
+    });
   }
 }
 export interface Square {
