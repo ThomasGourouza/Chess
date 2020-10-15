@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { BoardService, Square } from '../../services/board.service';
-import { Color, Figure } from '../../services/figure.service';
+import { Color } from '../../services/figure.service';
 
 @Component({
   selector: 'app-basic-board',
@@ -39,7 +39,9 @@ export class BasicBoardComponent implements OnInit {
       // premier click
     } else if (square.figure != null) {
       this.selectedSquare = square;
-      this.board.find((s) => this.equalSquares(s, square)).color = Color.blue;
+      this.board.find((s) =>
+        this.boardService.equalsPosition(s.position, square.position)
+      ).color = Color.blue;
       // Colore les cases possibles
       this.boardService.colorPossibleSquares(this.board);
     }
@@ -56,16 +58,13 @@ export class BasicBoardComponent implements OnInit {
     // modification de l'attribut "position" de la pièce
     figure.position = targetSquare.position;
     // Ajout de la pièce sur la case d'arrivée
-    board.find((s) => this.equalSquares(s, targetSquare)).figure = figure;
+    board.find((s) =>
+      this.boardService.equalsPosition(s.position, targetSquare.position)
+    ).figure = figure;
     // Suppression de la piece de la case de départ
-    board.find((s) => this.equalSquares(s, originSquare)).figure = null;
-  }
-
-  private equalSquares(square1: Square, square2: Square): boolean {
-    return (
-      square1.position.column.value === square2.position.column.value &&
-      square1.position.row.value === square2.position.row.value
-    );
+    board.find((s) =>
+      this.boardService.equalsPosition(s.position, originSquare.position)
+    ).figure = null;
   }
 
   public mapBoardForDisplay(board: Array<Square>): Array<Array<Square>> {

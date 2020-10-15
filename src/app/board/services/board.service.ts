@@ -42,34 +42,6 @@ export class BoardService {
     });
   }
 
-  private pawnMoveCondition(
-    square: Square,
-    pawnColor: Color,
-    pawnRow: number,
-    pawnColumn: number
-  ): boolean {
-    return (
-      (pawnColor === Color.black &&
-        // pions noirs au départ
-        ((pawnRow === 7 &&
-          square.position.column.value === pawnColumn &&
-          [pawnRow - 1, pawnRow - 2].includes(square.position.row.value)) ||
-          // pions noirs déjà déplacés
-          (pawnRow < 7 &&
-            square.position.column.value === pawnColumn &&
-            pawnRow - 1 === square.position.row.value))) ||
-      (pawnColor === Color.white &&
-        // pions blancs au départ
-        ((pawnRow === 2 &&
-          square.position.column.value === pawnColumn &&
-          [pawnRow + 1, pawnRow + 2].includes(square.position.row.value)) ||
-          // pions blancs déjà déplacés
-          (pawnRow > 2 &&
-            square.position.column.value === pawnColumn &&
-            pawnRow + 1 === square.position.row.value)))
-    );
-  }
-
   public possibleSquaresForFigure(
     figure: Figure,
     board: Array<Square>
@@ -80,7 +52,45 @@ export class BoardService {
     switch (figure.name) {
       case FigureName.pawn: {
         return board.filter((square: Square) =>
-          this.pawnMoveCondition(square, figure.color, figureRow, figureColumn)
+          this.figureService.pawnMoveCondition(
+            square,
+            figure.color,
+            figureRow,
+            figureColumn
+          )
+        );
+      }
+      case FigureName.rook: {
+        return board.filter((square: Square) =>
+          this.figureService.rookMoveCondition(square, figureRow, figureColumn)
+        );
+      }
+      case FigureName.bishop: {
+        return board.filter((square: Square) =>
+          this.figureService.bishopMoveCondition(
+            square,
+            figureRow,
+            figureColumn
+          )
+        );
+      }
+      case FigureName.king: {
+        return board.filter((square: Square) =>
+          this.figureService.kingMoveCondition(square, figureRow, figureColumn)
+        );
+      }
+      case FigureName.queen: {
+        return board.filter((square: Square) =>
+          this.figureService.queenMoveCondition(square, figureRow, figureColumn)
+        );
+      }
+      case FigureName.knight: {
+        return board.filter((square: Square) =>
+          this.figureService.knightMoveCondition(
+            square,
+            figureRow,
+            figureColumn
+          )
         );
       }
       default: {
@@ -96,6 +106,13 @@ export class BoardService {
     this.possibleSquaresForFigure(figure, board).map((square: Square) => {
       square.color = Color.green;
     });
+  }
+
+  public equalsPosition(position1: Position, position2: Position): boolean {
+    return (
+      position1.column.value === position2.column.value &&
+      position1.row.value === position2.row.value
+    );
   }
 }
 export interface Square {

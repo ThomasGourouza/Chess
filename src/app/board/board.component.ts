@@ -54,7 +54,7 @@ export class BoardComponent implements OnInit {
   private setFiguresOnBoard(): void {
     this.figures.map((figure: Figure) => {
       this.board.find((square: Square) =>
-        this.figureService.isFigureOnSquare(figure, square)
+        this.boardService.equalsPosition(figure.position, square.position)
       ).figure = figure;
     });
   }
