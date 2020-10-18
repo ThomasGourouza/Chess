@@ -1,29 +1,42 @@
-<table>
-  <tr *ngFor="let rowToDisplay of mapBoardForDisplay(board)">
-    <td *ngFor="let squareToDisplay of rowToDisplay">
-      <div
-        class="content"
-        [ngClass]="{
-          white: isColored(squareToDisplay.color, 'white'),
-          black: isColored(squareToDisplay.color, 'black'),
-          green: isColored(squareToDisplay.color, 'green'),
-          red: isColored(squareToDisplay.color, 'red'),
-          blue: isColored(squareToDisplay.color, 'blue')
-        }"
-        (click)="onClick(squareToDisplay)"
-      >
-        <h1
-          *ngIf="!!squareToDisplay.figure"
-          class="d-flex justify-content-center align-items-center"
-          [ngClass]="{
-            whiteFont: isColored(squareToDisplay.figure.color, 'white'),
-            blackFont: isColored(squareToDisplay.figure.color, 'black')
-          }"
-        >
-          {{ squareToDisplay.figure.code }}
-        </h1>
-      </div>
-    </td>
-  </tr>
-</table>
-<br />
+<div class="row">
+  <div class="row col">
+    <div class="col-11 d-flex justify-content-center">
+      <table>
+        <tr *ngFor="let rowToDisplay of mapBoardForDisplay(board)">
+          <td *ngFor="let squareToDisplay of rowToDisplay">
+            <div
+              class="content"
+              [ngClass]="{
+                white: isColored(squareToDisplay.color, 'white'),
+                black: isColored(squareToDisplay.color, 'black'),
+                green: isColored(squareToDisplay.color, 'green'),
+                red: isColored(squareToDisplay.color, 'red'),
+                blue: isColored(squareToDisplay.color, 'blue'),
+                yellow: isColored(squareToDisplay.color, 'yellow')
+              }"
+              (click)="onClick(squareToDisplay)"
+            >
+              <h1
+                *ngIf="!!squareToDisplay.figure"
+                class="d-flex justify-content-center align-items-center"
+                [ngClass]="{
+                  whiteFont: isColored(squareToDisplay.figure.color, 'white'),
+                  blackFont: isColored(squareToDisplay.figure.color, 'black')
+                }"
+              >
+                {{ squareToDisplay.figure.code }}
+              </h1>
+            </div>
+          </td>
+        </tr>
+      </table>
+      <br />
+    </div>
+  </div>
+  <div class="col-4">
+    <app-promotion-selection
+      *ngIf="isPromotion"
+      (promotionEmitter)="onPromotion($event)"
+    ></app-promotion-selection>
+  </div>
+</div>

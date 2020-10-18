@@ -1,16 +1,13 @@
-<div class="container">
+<div class="mx-5">
   <div class="row">
-    <div class="col-2">
+    <div class="col-3">
       <app-info [selectedSquare]="selectedSquare"></app-info>
     </div>
     <div class="col">
-      <div class="col-10">
-        <app-basic-board
-          [board]="board"
-          [selectedSquare]="selectedSquare"
-          (squareSelectEmitter)="onSquareSelect($event)"
-        ></app-basic-board>
-      </div>
+      <app-basic-board
+        [board]="board"
+        (squareSelectEmitter)="onSquareSelect($event)"
+      ></app-basic-board>
     </div>
   </div>
 </div>

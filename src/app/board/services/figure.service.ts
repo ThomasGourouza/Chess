@@ -238,6 +238,7 @@ export enum Color {
   green = 'GREEN',
   red = 'RED',
   blue = 'BLUE',
+  yellow = 'YELLOW'
 }
 export enum FigureName {
   pawn = 'PAWN',

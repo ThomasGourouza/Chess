@@ -33,13 +33,11 @@ export class BoardComponent implements OnInit {
     this.selectedSquare = selectedSquare;
   }
 
-  public ngOnInit(): void {
-    console.log(this.figures);
-    console.log(this.board);
-  }
+  public ngOnInit(): void {}
 
   public showSelectedSquare(): void {
     console.log(this.selectedSquare);
+    console.log(this.board);
   }
 
   private initFigures(): void {
