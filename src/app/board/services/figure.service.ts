@@ -1,11 +1,110 @@
 import { Injectable } from '@angular/core';
-import { Square } from './board.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class FigureService {
   constructor() {}
+
+  /**
+   * Méthode d'initialisation des pièces
+   *
+   * @param figures
+   */
+  public initFigures(figures: Array<Figure>): void {
+    this.initPawns(figures);
+    this.initKnights(figures);
+    this.initBishops(figures);
+    this.initRooks(figures);
+    this.initQueens(figures);
+    this.initKings(figures);
+  }
+
+  /**
+   * Méthodes de récupération de chaque pièce
+   *
+   */
+
+  public initPawns(figures: Array<Figure>): void {
+    for (let index = 1; index <= 8; index++) {
+      // Les pions noirs
+      const blackPawn: Figure = this.getPawn(7, index, Color.black);
+      // Ajout à la liste des pièces
+      figures.push(blackPawn);
+      // Les pions Blancs
+      const whitePawn: Figure = this.getPawn(2, index, Color.white);
+      // Ajout à la liste des pièces
+      figures.push(whitePawn);
+    }
+  }
+
+  public initKnights(figures: Array<Figure>): void {
+    // Les cavaliers noirs
+    figures.push(this.getKnight(8, 2, Color.black));
+    figures.push(this.getKnight(8, 7, Color.black));
+    // Les cavaliers blancs
+    figures.push(this.getKnight(1, 2, Color.white));
+    figures.push(this.getKnight(1, 7, Color.white));
+  }
+
+  public initBishops(figures: Array<Figure>): void {
+    // Les fous noirs
+    figures.push(this.getBishop(8, 3, Color.black));
+    figures.push(this.getBishop(8, 6, Color.black));
+    // Les fous blancs
+    figures.push(this.getBishop(1, 3, Color.white));
+    figures.push(this.getBishop(1, 6, Color.white));
+  }
+
+  public initRooks(figures: Array<Figure>): void {
+    // Les fous noirs
+    figures.push(this.getRook(8, 1, Color.black));
+    figures.push(this.getRook(8, 8, Color.black));
+    // Les fous blancs
+    figures.push(this.getRook(1, 1, Color.white));
+    figures.push(this.getRook(1, 8, Color.white));
+  }
+
+  public initQueens(figures: Array<Figure>): void {
+    // La dame noire
+    figures.push(this.getQueen(8, 4, Color.black));
+    // La dame blanche
+    figures.push(this.getQueen(1, 4, Color.white));
+  }
+
+  public initKings(figures: Array<Figure>): void {
+    // Le roi noir
+    figures.push(this.getKing(8, 5, Color.black));
+    // Le roi blanc
+    figures.push(this.getKing(1, 5, Color.white));
+  }
+
+  /**
+   * Méthodes de création des pièces
+   *
+   */
+
+  public getPromotionFigure(
+    row: number,
+    column: number,
+    color: Color,
+    figureName: FigureName
+  ): Figure {
+    switch (figureName) {
+      case FigureName.queen: {
+        return this.getQueen(row, column, color);
+      }
+      case FigureName.bishop: {
+        return this.getBishop(row, column, color);
+      }
+      case FigureName.knight: {
+        return this.getKnight(row, column, color);
+      }
+      case FigureName.rook: {
+        return this.getRook(row, column, color);
+      }
+    }
+  }
 
   public getKnight(row: number, column: number, color: Color): Figure {
     return this.getFigure('knight', 3, row, column, color);
@@ -60,12 +159,10 @@ export class FigureService {
     };
   }
 
-  public mapColomnNameToValue(name: string): number {
-    return [1, 2, 3, 4, 5, 6, 7, 8].find(
-      (i) => this.mapColomnValueToName(i) === name
-    );
-  }
-
+  /**
+   * Méthode de mapping de l'attribut "position" pour affichage
+   *
+   */
   public mapColomnValueToName(value: number): string {
     let name: string;
     switch (value) {
@@ -107,123 +204,6 @@ export class FigureService {
     }
     return name;
   }
-
-  public pawnMoveCondition(
-    square: Square,
-    pawnColor: Color,
-    pawnRow: number,
-    pawnColumn: number
-  ): boolean {
-    return (
-      (pawnColor === Color.black &&
-        // pions noirs au départ
-        ((pawnRow === 7 &&
-          square.position.column.value === pawnColumn &&
-          [pawnRow - 1, pawnRow - 2].includes(square.position.row.value)) ||
-          // pions noirs déjà déplacés
-          (pawnRow < 7 &&
-            square.position.column.value === pawnColumn &&
-            pawnRow - 1 === square.position.row.value))) ||
-      (pawnColor === Color.white &&
-        // pions blancs au départ
-        ((pawnRow === 2 &&
-          square.position.column.value === pawnColumn &&
-          [pawnRow + 1, pawnRow + 2].includes(square.position.row.value)) ||
-          // pions blancs déjà déplacés
-          (pawnRow > 2 &&
-            square.position.column.value === pawnColumn &&
-            pawnRow + 1 === square.position.row.value)))
-    );
-  }
-
-  public rookMoveCondition(
-    square: Square,
-    rookRow: number,
-    rookColumn: number
-  ): boolean {
-    return (
-      (square.position.column.value === rookColumn ||
-        square.position.row.value === rookRow) &&
-      (square.position.column.value !== rookColumn ||
-        square.position.row.value !== rookRow)
-    );
-  }
-
-  private subBishopMoveCondition(
-    square: Square,
-    bishopRow: number,
-    bishopColumn: number,
-    i: number
-  ): boolean {
-    return (
-      (square.position.column.value === bishopColumn + i ||
-        square.position.column.value === bishopColumn - i) &&
-      (square.position.row.value === bishopRow + i ||
-        square.position.row.value === bishopRow - i)
-    );
-  }
-
-  public bishopMoveCondition(
-    square: Square,
-    bishopRow: number,
-    bishopColumn: number
-  ): boolean {
-    let condition = false;
-    for (let i = 1; i < 8; i++) {
-      condition ||= this.subBishopMoveCondition(
-        square,
-        bishopRow,
-        bishopColumn,
-        i
-      );
-    }
-    return condition;
-  }
-
-  public kingMoveCondition(
-    square: Square,
-    kingRow: number,
-    kingColumn: number
-  ): boolean {
-    const colMove =
-      square.position.column.value === kingColumn + 1 ||
-      square.position.column.value === kingColumn - 1;
-    const rowMove =
-      square.position.row.value === kingRow + 1 ||
-      square.position.row.value === kingRow - 1;
-    return (
-      (square.position.row.value === kingRow && colMove) ||
-      (square.position.column.value === kingColumn && rowMove) ||
-      (colMove && rowMove)
-    );
-  }
-
-  public queenMoveCondition(
-    square: Square,
-    queenRow: number,
-    queenColumn: number
-  ): boolean {
-    return (
-      this.rookMoveCondition(square, queenRow, queenColumn) ||
-      this.bishopMoveCondition(square, queenRow, queenColumn)
-    );
-  }
-
-  public knightMoveCondition(
-    square: Square,
-    knightRow: number,
-    knightColumn: number
-  ): boolean {
-    return (
-      !this.queenMoveCondition(square, knightRow, knightColumn) &&
-      square.position.row.value >= knightRow - 2 &&
-      square.position.row.value <= knightRow + 2 &&
-      square.position.column.value >= knightColumn - 2 &&
-      square.position.column.value <= knightColumn + 2 &&
-      (square.position.column.value !== knightColumn ||
-        square.position.row.value !== knightRow)
-    );
-  }
 }
 export interface Figure {
   value: number;
@@ -238,7 +218,7 @@ export enum Color {
   green = 'GREEN',
   red = 'RED',
   blue = 'BLUE',
-  yellow = 'YELLOW'
+  yellow = 'YELLOW',
 }
 export enum FigureName {
   pawn = 'PAWN',

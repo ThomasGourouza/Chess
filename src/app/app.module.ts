@@ -13,12 +13,10 @@ import { PromotionSelectionComponent } from './board/components/basic-board/prom
     BoardComponent,
     InfoComponent,
     BasicBoardComponent,
-    PromotionSelectionComponent
+    PromotionSelectionComponent,
   ],
-  imports: [
-    BrowserModule
-  ],
+  imports: [BrowserModule],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

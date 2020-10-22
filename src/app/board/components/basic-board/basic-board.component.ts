@@ -6,6 +6,9 @@ import {
   FigureName,
   FigureService,
 } from '../../services/figure.service';
+import { MoveConditionService } from '../../services/moveService/move-condition.service';
+import { MoveService } from '../../services/moveService/Move.service';
+import { UtilsService } from '../../services/utils.service';
 
 @Component({
   selector: 'app-basic-board',
@@ -24,16 +27,26 @@ export class BasicBoardComponent implements OnInit {
 
   constructor(
     private boardService: BoardService,
-    private figureService: FigureService
+    private figureService: FigureService,
+    private moveService: MoveService,
+    private moveConditionService: MoveConditionService,
+    private utilsService: UtilsService
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.initSelectedSquares();
+  }
 
   private initSelectedSquares(): void {
     this.targetSquare = null;
     this.originSquare = null;
   }
 
+  /**
+   * Click sur une case de l'échiquier
+   *
+   * @param square
+   */
   public onClick(square: Square): void {
     if (!this.isPromotion) {
       // deuxième click
@@ -43,7 +56,7 @@ export class BasicBoardComponent implements OnInit {
         this.boardService.resetBoardColors(this.board);
         // Si la case sélectionnée est autorisée
         if (
-          this.boardService
+          this.moveService
             .possibleSquares(this.originSquare.figure, this.board)
             .includes(this.targetSquare)
         ) {
@@ -63,7 +76,7 @@ export class BasicBoardComponent implements OnInit {
       } else if (square.figure != null) {
         this.originSquare = square;
         this.board.find((s) =>
-          this.boardService.equalsPosition(s.position, square.position)
+          this.utilsService.equalsPosition(s.position, square.position)
         ).color = Color.blue;
         // Colore les cases possibles
         this.boardService.colorPossibleSquares(
@@ -75,50 +88,19 @@ export class BasicBoardComponent implements OnInit {
     }
   }
 
-  private promotionCondition(figure: Figure, targetSquare: Square): boolean {
-    // cas du pion blanc
-    const whitePawnCondition =
-      figure.color === Color.white && targetSquare.position.row.value === 8;
-    // cas du pion noir
-    const blackPawnCondition =
-      figure.color === Color.black && targetSquare.position.row.value === 1;
-    return (
-      figure.name === FigureName.pawn &&
-      (whitePawnCondition || blackPawnCondition)
-    );
-  }
-
-  private getPromotionFigure(
-    row: number,
-    column: number,
-    color: Color,
-    figureName: FigureName
-  ) {
-    switch (figureName) {
-      case FigureName.queen: {
-        return this.figureService.getQueen(row, column, color);
-      }
-      case FigureName.bishop: {
-        return this.figureService.getBishop(row, column, color);
-      }
-      case FigureName.knight: {
-        return this.figureService.getKnight(row, column, color);
-      }
-      case FigureName.rook: {
-        return this.figureService.getRook(row, column, color);
-      }
-    }
-  }
-
+  /**
+   * Colore les cases de départ et d'arrivée
+   *
+   */
   public colorOriginAndTargetSquare(): void {
     this.board
       .filter(
         (square) =>
-          this.boardService.equalsPosition(
+          this.utilsService.equalsPosition(
             square.position,
             this.originSquare.position
           ) ||
-          this.boardService.equalsPosition(
+          this.utilsService.equalsPosition(
             square.position,
             this.targetSquare.position
           )
@@ -143,11 +125,11 @@ export class BasicBoardComponent implements OnInit {
     // modification de l'attribut "position" de la pièce
     figure.position = targetSquare.position;
     // cas de la promotion du pion
-    if (this.promotionCondition(figure, targetSquare)) {
+    if (this.moveConditionService.promotionCondition(figure, targetSquare)) {
       // ouvre le composant de choix de la pièce de promotion
       this.isPromotion = true;
     } else {
-      this.subMoveFigureOnSquare(figure, originSquare, targetSquare, board);
+      this.applyMoveFigureToSquare(figure, originSquare, targetSquare, board);
     }
   }
 
@@ -159,13 +141,13 @@ export class BasicBoardComponent implements OnInit {
    */
   public onPromotion(promotionFigureName: FigureName): void {
     // création de la pièce de promotion choisie
-    const promotionFigure = this.getPromotionFigure(
+    const promotionFigure = this.figureService.getPromotionFigure(
       this.targetSquare.position.row.value,
       this.targetSquare.position.column.value,
       this.originSquare.figure.color,
       promotionFigureName
     );
-    this.subMoveFigureOnSquare(
+    this.applyMoveFigureToSquare(
       promotionFigure,
       this.originSquare,
       this.targetSquare,
@@ -176,14 +158,14 @@ export class BasicBoardComponent implements OnInit {
   }
 
   /**
-   * Sous-méthode de déplacement
+   * Applique le déplacement
    *
    * @param figure
    * @param originSquare
    * @param targetSquare
    * @param board
    */
-  private subMoveFigureOnSquare(
+  private applyMoveFigureToSquare(
     figure: Figure,
     originSquare: Square,
     targetSquare: Square,
@@ -191,16 +173,21 @@ export class BasicBoardComponent implements OnInit {
   ): void {
     // Suppression de la piece de la case de départ
     board.find((s) =>
-      this.boardService.equalsPosition(s.position, originSquare.position)
+      this.utilsService.equalsPosition(s.position, originSquare.position)
     ).figure = null;
     // Ajout de la pièce sur la case d'arrivée
     board.find((s) =>
-      this.boardService.equalsPosition(s.position, targetSquare.position)
+      this.utilsService.equalsPosition(s.position, targetSquare.position)
     ).figure = figure;
     // Réinitialisation des cases d'arrivée et d'origine
     this.initSelectedSquares();
   }
 
+  /**
+   * Pour afficher l'échiquier sur la page
+   *
+   * @param board
+   */
   public mapBoardForDisplay(board: Array<Square>): Array<Array<Square>> {
     const boardToDisplay: Array<Array<Square>> = [];
     for (let rowIndex = 8; rowIndex >= 1; rowIndex--) {
@@ -216,6 +203,12 @@ export class BasicBoardComponent implements OnInit {
     return boardToDisplay;
   }
 
+  /**
+   * Pour vérifier si une case est d'une certaine couleur
+   *
+   * @param squareColor
+   * @param color
+   */
   public isColored(squareColor: Color, color: string): boolean {
     let isColored = false;
     switch (color) {
