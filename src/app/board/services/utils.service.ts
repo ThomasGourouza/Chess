@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Square } from './board.service';
-import { Position } from './figure.service';
+import { Color, Position } from './figure.service';
 
 @Injectable({
   providedIn: 'root',
@@ -32,5 +32,45 @@ export class UtilsService {
       position1.column.value === position2.column.value &&
       position1.row.value === position2.row.value
     );
+  }
+
+  /**
+   * Pour vérifier si une case est d'une certaine couleur
+   *
+   * @param squareColor
+   * @param color
+   */
+  public isColored(squareColor: Color, color: string): boolean {
+    let isColored = false;
+    switch (color) {
+      case 'white': {
+        isColored = squareColor === Color.white;
+        break;
+      }
+      case 'black': {
+        isColored = squareColor === Color.black;
+        break;
+      }
+      case 'green': {
+        isColored = squareColor === Color.green;
+        break;
+      }
+      case 'red': {
+        isColored = squareColor === Color.red;
+        break;
+      }
+      case 'blue': {
+        isColored = squareColor === Color.blue;
+        break;
+      }
+      case 'yellow': {
+        isColored = squareColor === Color.yellow;
+        break;
+      }
+      default: {
+        break;
+      }
+    }
+    return isColored;
   }
 }

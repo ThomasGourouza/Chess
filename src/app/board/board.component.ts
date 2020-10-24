@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { BoardService, Square } from './services/board.service';
 import { Figure, FigureService } from './services/figure.service';
+import { HistoryService, Itinerary, Move } from './services/history.service';
 import { UtilsService } from './services/utils.service';
 
 @Component({
@@ -12,24 +13,25 @@ export class BoardComponent implements OnInit {
   public figures: Array<Figure>;
   public board: Array<Square>;
   public selectedSquare: Square;
+  public history: Array<Move>;
 
   constructor(
     private boardService: BoardService,
     private figureService: FigureService,
+    private historyService: HistoryService,
     private utilsService: UtilsService
   ) {
-    // Initialisation des pieces
     this.figures = [];
-    this.figureService.initFigures(this.figures);
-    // Initialisation de l'échiquier
     this.board = this.boardService.getBoard();
+    this.selectedSquare = null;
+    this.history = [];
   }
 
   public ngOnInit(): void {
+    // Récupération des pieces
+    this.figureService.initFigures(this.figures);
     // Placement des pièces sur l'échiquier
     this.setFiguresOnBoard(this.figures, this.board);
-    // Initialisation de la pièce selectionnée
-    this.selectedSquare = null;
   }
 
   /**
@@ -42,10 +44,13 @@ export class BoardComponent implements OnInit {
     this.selectedSquare = selectedSquare;
   }
 
-  // TODO: remove
-  public showSelectedSquare(): void {
-    console.log(this.selectedSquare);
-    console.log(this.board);
+  /**
+   * émetteur pour ajouter un coup à l'historique de la partie
+   *
+   * @param history
+   */
+  public onMove(moveForHistory: Itinerary): void {
+    this.historyService.addToHistory(this.history, moveForHistory);
   }
 
   private setFiguresOnBoard(

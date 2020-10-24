@@ -6,6 +6,7 @@ import {
   FigureName,
   FigureService,
 } from '../../services/figure.service';
+import { Itinerary } from '../../services/history.service';
 import { MoveConditionService } from '../../services/moveService/move-condition.service';
 import { MoveService } from '../../services/moveService/Move.service';
 import { UtilsService } from '../../services/utils.service';
@@ -20,10 +21,13 @@ export class BasicBoardComponent implements OnInit {
   public board: Array<Square>;
   @Output()
   public squareSelectEmitter: EventEmitter<Square> = new EventEmitter<Square>();
+  @Output()
+  public moveEmitter: EventEmitter<Itinerary> = new EventEmitter<Itinerary>();
 
   public originSquare: Square;
   public targetSquare: Square;
   public isPromotion: boolean;
+  public moveForHistory: Itinerary;
 
   constructor(
     private boardService: BoardService,
@@ -31,11 +35,11 @@ export class BasicBoardComponent implements OnInit {
     private moveService: MoveService,
     private moveConditionService: MoveConditionService,
     private utilsService: UtilsService
-  ) {}
-
-  ngOnInit(): void {
+  ) {
     this.initSelectedSquares();
   }
+
+  ngOnInit(): void {}
 
   private initSelectedSquares(): void {
     this.targetSquare = null;
@@ -166,11 +170,19 @@ export class BasicBoardComponent implements OnInit {
    * @param board
    */
   private applyMoveFigureToSquare(
-    figure: Figure,
+    figureToMove: Figure,
     originSquare: Square,
     targetSquare: Square,
     board: Array<Square>
   ): void {
+    // construction du coup à envoyer à l'historique
+    this.moveForHistory = {
+      figure: figureToMove,
+      origin: originSquare.position,
+      target: targetSquare.position,
+    };
+    // Envoi du coup à l'historique
+    this.moveEmitter.emit(this.moveForHistory);
     // Suppression de la piece de la case de départ
     board.find((s) =>
       this.utilsService.equalsPosition(s.position, originSquare.position)
@@ -178,7 +190,7 @@ export class BasicBoardComponent implements OnInit {
     // Ajout de la pièce sur la case d'arrivée
     board.find((s) =>
       this.utilsService.equalsPosition(s.position, targetSquare.position)
-    ).figure = figure;
+    ).figure = figureToMove;
     // Réinitialisation des cases d'arrivée et d'origine
     this.initSelectedSquares();
   }
@@ -204,42 +216,12 @@ export class BasicBoardComponent implements OnInit {
   }
 
   /**
-   * Pour vérifier si une case est d'une certaine couleur
+   * Pour vérifier dans le html si une case est d'une certaine couleur
    *
    * @param squareColor
    * @param color
    */
   public isColored(squareColor: Color, color: string): boolean {
-    let isColored = false;
-    switch (color) {
-      case 'white': {
-        isColored = squareColor === Color.white;
-        break;
-      }
-      case 'black': {
-        isColored = squareColor === Color.black;
-        break;
-      }
-      case 'green': {
-        isColored = squareColor === Color.green;
-        break;
-      }
-      case 'red': {
-        isColored = squareColor === Color.red;
-        break;
-      }
-      case 'blue': {
-        isColored = squareColor === Color.blue;
-        break;
-      }
-      case 'yellow': {
-        isColored = squareColor === Color.yellow;
-        break;
-      }
-      default: {
-        break;
-      }
-    }
-    return isColored;
+    return this.utilsService.isColored(squareColor, color);
   }
 }
