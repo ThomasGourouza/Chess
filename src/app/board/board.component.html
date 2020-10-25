@@ -9,6 +9,7 @@
     <div class="col">
       <app-basic-board
         [board]="board"
+        [trait]="trait"
         (squareSelectEmitter)="onSquareSelect($event)"
         (moveEmitter)="onMove($event)"
       ></app-basic-board>

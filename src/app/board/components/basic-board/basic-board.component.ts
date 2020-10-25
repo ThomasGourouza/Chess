@@ -19,6 +19,8 @@ import { UtilsService } from '../../services/utils.service';
 export class BasicBoardComponent implements OnInit {
   @Input()
   public board: Array<Square>;
+  @Input()
+  public trait: Color;
   @Output()
   public squareSelectEmitter: EventEmitter<Square> = new EventEmitter<Square>();
   @Output()
@@ -77,7 +79,7 @@ export class BasicBoardComponent implements OnInit {
           this.initSelectedSquares();
         }
         // premier click
-      } else if (square.figure != null) {
+      } else if (square.figure != null && square.figure.color === this.trait) {
         this.originSquare = square;
         this.board.find((s) =>
           this.utilsService.equalsPosition(s.position, square.position)

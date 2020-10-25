@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { BoardService, Square } from './services/board.service';
-import { Figure, FigureService } from './services/figure.service';
+import { Color, Figure, FigureService } from './services/figure.service';
 import { HistoryService, Itinerary, Move } from './services/history.service';
 import { UtilsService } from './services/utils.service';
 
@@ -14,6 +14,7 @@ export class BoardComponent implements OnInit {
   public board: Array<Square>;
   public selectedSquare: Square;
   public history: Array<Move>;
+  public trait: Color;
 
   constructor(
     private boardService: BoardService,
@@ -25,6 +26,8 @@ export class BoardComponent implements OnInit {
     this.board = this.boardService.getBoard();
     this.selectedSquare = null;
     this.history = [];
+    // Les blancs commencent
+    this.trait = Color.white;
   }
 
   public ngOnInit(): void {
@@ -50,7 +53,13 @@ export class BoardComponent implements OnInit {
    * @param history
    */
   public onMove(moveForHistory: Itinerary): void {
+    // Ajouter un coup à l'historique de la partie
     this.historyService.addToHistory(this.history, moveForHistory);
+    // determine à qui est-ce le tour de jouer
+    this.trait =
+      this.history[this.history.length - 1].blackMove != null
+        ? Color.white
+        : Color.black;
   }
 
   private setFiguresOnBoard(
