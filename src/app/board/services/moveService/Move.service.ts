@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Figure, FigureName, Color } from '../figure.service';
+import { Figure, FigureName, Color, Side } from '../figure.service';
 import { Square } from '../board.service';
 import { UtilsService } from '../utils.service';
 import { MoveConditionService } from './move-condition.service';
@@ -196,10 +196,15 @@ export class MoveService {
       case FigureName.king: {
         const castleSquares: Array<Square> = [];
         // Roque roi blanc à droite
-        // TODO: interdit de traverser case attaquée
+        // TODO: interdit de traverser une case attaquée
         if (
           figure.color === Color.white &&
-          !this.moveConditionService.hasKingAlreadyMoved(history, Color.white)
+          !this.moveConditionService.hasFigureAlreadyMoved(
+            FigureName.king,
+            history,
+            Color.white,
+            null
+          )
         ) {
           // à droite
           if (
@@ -207,6 +212,12 @@ export class MoveService {
               board,
               Color.white,
               true
+            ) &&
+            !this.moveConditionService.hasFigureAlreadyMoved(
+              FigureName.rook,
+              history,
+              Color.white,
+              Side.right
             )
           ) {
             castleSquares.push(
@@ -219,6 +230,12 @@ export class MoveService {
               board,
               Color.white,
               false
+            ) &&
+            !this.moveConditionService.hasFigureAlreadyMoved(
+              FigureName.rook,
+              history,
+              Color.white,
+              Side.left
             )
           ) {
             castleSquares.push(
@@ -230,7 +247,12 @@ export class MoveService {
         // TODO: interdit de traverser case attaquée
         if (
           figure.color === Color.black &&
-          !this.moveConditionService.hasKingAlreadyMoved(history, Color.black)
+          !this.moveConditionService.hasFigureAlreadyMoved(
+            FigureName.king,
+            history,
+            Color.black,
+            null
+          )
         ) {
           // à droite
           if (
@@ -238,6 +260,12 @@ export class MoveService {
               board,
               Color.black,
               true
+            ) &&
+            !this.moveConditionService.hasFigureAlreadyMoved(
+              FigureName.rook,
+              history,
+              Color.black,
+              Side.right
             )
           ) {
             castleSquares.push(
@@ -250,6 +278,12 @@ export class MoveService {
               board,
               Color.black,
               false
+            ) &&
+            !this.moveConditionService.hasFigureAlreadyMoved(
+              FigureName.rook,
+              history,
+              Color.black,
+              Side.left
             )
           ) {
             castleSquares.push(

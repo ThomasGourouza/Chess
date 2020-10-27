@@ -211,6 +211,7 @@ export interface Figure {
   code: FigureCode;
   color: Color;
   position: Position;
+  side?: Side;
 }
 export enum Color {
   black = 'BLACK',
@@ -243,4 +244,8 @@ export interface Position {
 export interface Item {
   value: number;
   name: string;
+}
+export enum Side {
+  right = 'R',
+  left = 'L',
 }

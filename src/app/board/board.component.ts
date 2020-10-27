@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { BoardService, Square } from './services/board.service';
-import { Color, Figure, FigureService } from './services/figure.service';
+import { Color, Figure, FigureService, Side } from './services/figure.service';
 import { HistoryService, Itinerary, Move } from './services/history.service';
 import { UtilsService } from './services/utils.service';
 
@@ -35,6 +35,22 @@ export class BoardComponent implements OnInit {
     this.figureService.initFigures(this.figures);
     // Placement des pièces sur l'échiquier
     this.setFiguresOnBoard(this.figures, this.board);
+    // Marquage des Tours pour distinguer celle de gauche de celle de droite
+    // (utile pour le roque)
+    this.board.map((square) => {
+      if (
+        this.utilsService.isSquareAt(square, 1, 1) ||
+        this.utilsService.isSquareAt(square, 1, 8)
+      ) {
+        square.figure.side = Side.left;
+      }
+      if (
+        this.utilsService.isSquareAt(square, 8, 1) ||
+        this.utilsService.isSquareAt(square, 8, 8)
+      ) {
+        square.figure.side = Side.right;
+      }
+    });
   }
 
   /**

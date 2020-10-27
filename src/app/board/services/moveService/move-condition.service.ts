@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Color, Figure, FigureName } from '../figure.service';
+import { Color, Figure, FigureName, Side } from '../figure.service';
 import { Square } from '../board.service';
 import { Move } from '../history.service';
 
@@ -11,8 +11,8 @@ export class MoveConditionService {
 
   /**
    * Condition pour la promotion du pion
-   * 
-   * @param figure 
+   *
+   * @param figure
    *
    * @param targetSquare
    */
@@ -29,20 +29,29 @@ export class MoveConditionService {
     );
   }
 
-    /**
+  /**
    * Méthodes utilitaires pour le roque
    *
    */
-  
-  public hasKingAlreadyMoved(history: Array<Move>, color: Color): boolean {
+
+  public hasFigureAlreadyMoved(
+    figureName: FigureName,
+    history: Array<Move>,
+    color: Color,
+    side: Side
+  ): boolean {
     return history.some((move) => {
       const figure =
         color === Color.white
-          ? move.whiteMove.figure.name
+          ? move.whiteMove.figure
           : move.blackMove != null
-          ? move.blackMove.figure.name
+          ? move.blackMove.figure
           : null;
-      return figure === FigureName.king;
+      return (
+        figure != null &&
+        figure.name === figureName &&
+        (side != null ? figure.side === side : true)
+      );
     });
   }
   public areSquaresForCastleEmpty(
@@ -59,7 +68,7 @@ export class MoveConditionService {
       )
       .some((square) => square.figure != null);
   }
-  
+
   /**
    * Conditions de déplacement pour chaque pièce
    *
