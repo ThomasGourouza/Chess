@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Color, Figure, FigureName } from '../figure.service';
 import { Square } from '../board.service';
+import { Move } from '../history.service';
 
 @Injectable({
   providedIn: 'root',
@@ -28,6 +29,37 @@ export class MoveConditionService {
     );
   }
 
+    /**
+   * Méthodes utilitaires pour le roque
+   *
+   */
+  
+  public hasKingAlreadyMoved(history: Array<Move>, color: Color): boolean {
+    return history.some((move) => {
+      const figure =
+        color === Color.white
+          ? move.whiteMove.figure.name
+          : move.blackMove != null
+          ? move.blackMove.figure.name
+          : null;
+      return figure === FigureName.king;
+    });
+  }
+  public areSquaresForCastleEmpty(
+    board: Array<Square>,
+    color: Color,
+    right: boolean
+  ): boolean {
+    const cols: Array<number> = right ? [6, 7] : [3, 4];
+    return !board
+      .filter(
+        (square) =>
+          square.position.row.value === (color === Color.white ? 1 : 8) &&
+          cols.includes(square.position.column.value)
+      )
+      .some((square) => square.figure != null);
+  }
+  
   /**
    * Conditions de déplacement pour chaque pièce
    *

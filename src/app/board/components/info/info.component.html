@@ -1,15 +1,22 @@
-<div class="d-flex justify-content-center info">
-  <div *ngIf="!!selectedSquare">
-    <h3>
-      Case:
-      {{
-        selectedSquare.position.column.name + selectedSquare.position.row.value
-      }}
-    </h3>
-    <b *ngIf="!!selectedSquare.figure">
-      Pièce sur la case: {{ selectedSquare.figure.color }}
-      {{ selectedSquare.figure.name }} ({{ selectedSquare.figure.value }})
-    </b>
+<div class="info">
+  <div class="d-flex justify-content-center">
+    <h3>Trait aux {{ toFrench() }}</h3>
+  </div>
+  <br />
+  <div class="d-flex justify-content-center">
+    <div *ngIf="!!selectedSquare">
+      <h3>
+        Case:
+        {{
+          selectedSquare.position.column.name +
+            selectedSquare.position.row.value
+        }}
+      </h3>
+      <b *ngIf="!!selectedSquare.figure">
+        Pièce sur la case: {{ selectedSquare.figure.color }}
+        {{ selectedSquare.figure.name }} ({{ selectedSquare.figure.value }})
+      </b>
+    </div>
   </div>
 </div>
 <br />

@@ -4,12 +4,14 @@
       <app-info
         [selectedSquare]="selectedSquare"
         [history]="history"
+        [trait]="trait"
       ></app-info>
     </div>
     <div class="col">
       <app-basic-board
         [board]="board"
         [trait]="trait"
+        [history]="history"
         (squareSelectEmitter)="onSquareSelect($event)"
         (moveEmitter)="onMove($event)"
       ></app-basic-board>

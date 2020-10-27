@@ -22,6 +22,16 @@ export class UtilsService {
   }
 
   /**
+   * Renvoie la valeur absolue de la différence entre a et b
+   *
+   * @param a
+   * @param b
+   */
+  public abs(a: number, b: number): number {
+    return a > b ? a - b : b - a;
+  }
+
+  /**
    * Méthode de comparaison de deux positions
    *
    * @param position1
@@ -31,6 +41,19 @@ export class UtilsService {
     return (
       position1.column.value === position2.column.value &&
       position1.row.value === position2.row.value
+    );
+  }
+
+  /**
+   * Méthode pour vérifier les coordonnées d'une case
+   *
+   * @param square
+   * @param col
+   * @param row
+   */
+  public isSquareAt(square: Square, col: number, row: number): boolean {
+    return (
+      square.position.column.value === col && square.position.row.value === row
     );
   }
 

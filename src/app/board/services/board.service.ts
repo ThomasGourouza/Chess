@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { FigureService, Color, Figure, Position } from './figure.service';
+import { Move } from './history.service';
 import { MoveService } from './moveService/Move.service';
 
 @Injectable({
@@ -55,11 +56,17 @@ export class BoardService {
    * @param figure
    * @param board
    */
-  public colorPossibleSquares(figure: Figure, board: Array<Square>): void {
+  public colorPossibleSquares(
+    figure: Figure,
+    board: Array<Square>,
+    history: Array<Move>
+  ): void {
     // Coloration de toutes les cases de destination possibles
-    this.moveService.possibleSquares(figure, board).map((square: Square) => {
-      square.color = Color.green;
-    });
+    this.moveService
+      .possibleSquares(figure, board, history)
+      .map((square: Square) => {
+        square.color = Color.green;
+      });
   }
 }
 export interface Square {

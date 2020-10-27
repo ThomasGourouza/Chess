@@ -6,7 +6,7 @@ import {
   FigureName,
   FigureService,
 } from '../../services/figure.service';
-import { Itinerary } from '../../services/history.service';
+import { Itinerary, Move } from '../../services/history.service';
 import { MoveConditionService } from '../../services/moveService/move-condition.service';
 import { MoveService } from '../../services/moveService/Move.service';
 import { UtilsService } from '../../services/utils.service';
@@ -21,6 +21,8 @@ export class BasicBoardComponent implements OnInit {
   public board: Array<Square>;
   @Input()
   public trait: Color;
+  @Input()
+  public history: Array<Move>;
   @Output()
   public squareSelectEmitter: EventEmitter<Square> = new EventEmitter<Square>();
   @Output()
@@ -63,7 +65,7 @@ export class BasicBoardComponent implements OnInit {
         // Si la case sélectionnée est autorisée
         if (
           this.moveService
-            .possibleSquares(this.originSquare.figure, this.board)
+            .possibleSquares(this.originSquare.figure, this.board, this.history)
             .includes(this.targetSquare)
         ) {
           // Colore les cases d'origine et d'arrivée
@@ -87,7 +89,8 @@ export class BasicBoardComponent implements OnInit {
         // Colore les cases possibles
         this.boardService.colorPossibleSquares(
           this.originSquare.figure,
-          this.board
+          this.board,
+          this.history
         );
       }
       this.squareSelectEmitter.emit(this.originSquare);
@@ -185,14 +188,62 @@ export class BasicBoardComponent implements OnInit {
     };
     // Envoi du coup à l'historique
     this.moveEmitter.emit(this.moveForHistory);
+    // Cas de la prise en passant
+    if (
+      figureToMove.name === FigureName.pawn &&
+      originSquare.position.column.value !==
+        targetSquare.position.column.value &&
+      targetSquare.figure == null
+    ) {
+      // capture du pion en passant (suppression du pion sur l'échiquier)
+      board.find(
+        (s) =>
+          s.position.column.value === targetSquare.position.column.value &&
+          s.position.row.value === originSquare.position.row.value
+      ).figure = null;
+    }
     // Suppression de la piece de la case de départ
     board.find((s) =>
       this.utilsService.equalsPosition(s.position, originSquare.position)
     ).figure = null;
     // Ajout de la pièce sur la case d'arrivée
+    //TODO: capture
     board.find((s) =>
       this.utilsService.equalsPosition(s.position, targetSquare.position)
     ).figure = figureToMove;
+    // Cas du roque
+    if (
+      figureToMove.name === FigureName.king &&
+      this.utilsService.abs(
+        originSquare.position.column.value,
+        targetSquare.position.column.value
+      ) === 2
+    ) {
+      const right = targetSquare.position.column.value === 7;
+      const color = figureToMove.color;
+      const rookSquare = board.find(
+        (square) =>
+          square.figure != null &&
+          square.figure.name === FigureName.rook &&
+          square.figure.color === color &&
+          square.position.column.value === (right ? 8 : 1)
+      );
+      const rookToCastle = rookSquare.figure;
+      // Suppression de la tour de sa case de départ
+      rookSquare.figure = null;
+      // Récupération de la case du roque pour la tour
+      const castleSquareForRook = board.find((s) =>
+        this.utilsService.isSquareAt(
+          s,
+          right ? 6 : 4,
+          color === Color.white ? 1 : 8
+        )
+      );
+      // Actualisation de la position de la tour
+      rookToCastle.position = castleSquareForRook.position;
+      // Ajout de la tour sur la case du roque
+      castleSquareForRook.figure = rookToCastle;
+    }
     // Réinitialisation des cases d'arrivée et d'origine
     this.initSelectedSquares();
   }

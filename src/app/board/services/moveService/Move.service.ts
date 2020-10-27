@@ -3,6 +3,7 @@ import { Figure, FigureName, Color } from '../figure.service';
 import { Square } from '../board.service';
 import { UtilsService } from '../utils.service';
 import { MoveConditionService } from './move-condition.service';
+import { Move } from '../history.service';
 
 @Injectable({
   providedIn: 'root',
@@ -23,11 +24,16 @@ export class MoveService {
    * @param figure
    * @param board
    */
-  public possibleSquares(figure: Figure, board: Array<Square>): Array<Square> {
+  public possibleSquares(
+    figure: Figure,
+    board: Array<Square>,
+    history: Array<Move>
+  ): Array<Square> {
     return this.moveConstraintForFigure(
       figure,
       this.basicPossibleMovesForFigure(figure, board),
-      board
+      board,
+      history
     );
   }
 
@@ -116,13 +122,46 @@ export class MoveService {
   public moveConstraintForFigure(
     figure: Figure,
     basicPossibleSquares: Array<Square>,
-    board: Array<Square>
+    board: Array<Square>,
+    history: Array<Move>
   ): Array<Square> {
     let possibleSquares = basicPossibleSquares.filter(
       (square) => square.figure == null || square.figure.color != figure.color
     );
     switch (figure.name) {
       case FigureName.pawn: {
+        // prise en passant
+        let enPassantSquare: Square = null;
+        if (figure.color === Color.white && figure.position.row.value === 5) {
+          const PreviousBlackMove = history[history.length - 1].blackMove;
+          if (
+            PreviousBlackMove.figure.name === FigureName.pawn &&
+            PreviousBlackMove.origin.row.value === 7 &&
+            PreviousBlackMove.target.row.value === 5
+          ) {
+            enPassantSquare = board.find(
+              (s) =>
+                s.position.column.value ===
+                  PreviousBlackMove.target.column.value &&
+                s.position.row.value === 6
+            );
+          }
+        }
+        if (figure.color === Color.black && figure.position.row.value === 4) {
+          const PreviousWhiteMove = history[history.length - 1].whiteMove;
+          if (
+            PreviousWhiteMove.figure.name === FigureName.pawn &&
+            PreviousWhiteMove.origin.row.value === 2 &&
+            PreviousWhiteMove.target.row.value === 4
+          ) {
+            enPassantSquare = board.find(
+              (s) =>
+                s.position.column.value ===
+                  PreviousWhiteMove.target.column.value &&
+                s.position.row.value === 3
+            );
+          }
+        }
         const pawnRow = figure.position.row.value;
         const pawnColumn = figure.position.column.value;
         const opponentFigureTakable = board.filter(
@@ -149,10 +188,80 @@ export class MoveService {
           possibleSquaresWithTake,
           removedSquares
         );
+        if (enPassantSquare != null) {
+          possibleSquares.push(enPassantSquare);
+        }
         break;
       }
       case FigureName.king: {
-        // TODO
+        const castleSquares: Array<Square> = [];
+        // Roque roi blanc à droite
+        // TODO: interdit de traverser case attaquée
+        if (
+          figure.color === Color.white &&
+          !this.moveConditionService.hasKingAlreadyMoved(history, Color.white)
+        ) {
+          // à droite
+          if (
+            this.moveConditionService.areSquaresForCastleEmpty(
+              board,
+              Color.white,
+              true
+            )
+          ) {
+            castleSquares.push(
+              board.find((s) => this.utilsService.isSquareAt(s, 7, 1))
+            );
+          }
+          // à gauche
+          if (
+            this.moveConditionService.areSquaresForCastleEmpty(
+              board,
+              Color.white,
+              false
+            )
+          ) {
+            castleSquares.push(
+              board.find((s) => this.utilsService.isSquareAt(s, 3, 1))
+            );
+          }
+        }
+        // Roque roi noir à droite
+        // TODO: interdit de traverser case attaquée
+        if (
+          figure.color === Color.black &&
+          !this.moveConditionService.hasKingAlreadyMoved(history, Color.black)
+        ) {
+          // à droite
+          if (
+            this.moveConditionService.areSquaresForCastleEmpty(
+              board,
+              Color.black,
+              true
+            )
+          ) {
+            castleSquares.push(
+              board.find((s) => this.utilsService.isSquareAt(s, 7, 8))
+            );
+          }
+          // à gauche
+          if (
+            this.moveConditionService.areSquaresForCastleEmpty(
+              board,
+              Color.black,
+              false
+            )
+          ) {
+            castleSquares.push(
+              board.find((s) => this.utilsService.isSquareAt(s, 3, 8))
+            );
+          }
+        }
+        if (castleSquares.length > 0) {
+          castleSquares.map((s) => {
+            possibleSquares.push(s);
+          });
+        }
         break;
       }
       case FigureName.rook:

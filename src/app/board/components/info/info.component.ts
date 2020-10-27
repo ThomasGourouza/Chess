@@ -1,7 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { truncate } from 'fs';
 import { Square } from '../../services/board.service';
+import { Color } from '../../services/figure.service';
 import { Move } from '../../services/history.service';
-import { UtilsService } from '../../services/utils.service';
 
 @Component({
   selector: 'app-info',
@@ -13,13 +14,15 @@ export class InfoComponent implements OnInit {
   public selectedSquare: Square;
   @Input()
   public history: Array<Move>;
+  @Input()
+  public trait: Color;
 
-  constructor(private utilsService: UtilsService) {}
+  constructor() {}
 
   public ngOnInit(): void {}
 
   /**
-   * Affiche le coup dand l'historique du html
+   * Affiche le coup dans l'historique du html
    *
    * @param color
    */
@@ -39,5 +42,12 @@ export class InfoComponent implements OnInit {
         move.blackMove.target.row.name +
         check
       : '';
+  }
+
+  /**
+   * Traduction pour affichage de la couleur du trait
+   */
+  public toFrench(): string {
+    return this.trait === Color.black ? 'noirs' : 'blancs';
   }
 }
