@@ -1,5 +1,4 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { truncate } from 'fs';
 import { Square } from '../../services/board.service';
 import { Color } from '../../services/figure.service';
 import { Move } from '../../services/history.service';

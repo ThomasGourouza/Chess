@@ -16,7 +16,7 @@
               }"
               (click)="onClick(squareToDisplay)"
             >
-              <h1
+              <!-- <h1
                 *ngIf="!!squareToDisplay.figure"
                 class="d-flex justify-content-center align-items-center"
                 [ngClass]="{
@@ -25,7 +25,18 @@
                 }"
               >
                 {{ squareToDisplay.figure.code }}
-              </h1>
+              </h1> -->
+
+              <img
+                *ngIf="!!squareToDisplay.figure"
+                class="fit"
+                [src]="
+                  getUrlOfFigure(
+                    squareToDisplay.figure.code,
+                    squareToDisplay.figure.color
+                  )
+                "
+              />
             </div>
           </td>
         </tr>

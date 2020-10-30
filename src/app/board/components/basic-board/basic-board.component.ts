@@ -3,6 +3,7 @@ import { BoardService, Square } from '../../services/board.service';
 import {
   Color,
   Figure,
+  FigureCode,
   FigureName,
   FigureService,
 } from '../../services/figure.service';
@@ -276,5 +277,45 @@ export class BasicBoardComponent implements OnInit {
    */
   public isColored(squareColor: Color, color: string): boolean {
     return this.utilsService.isColored(squareColor, color);
+  }
+
+  /**
+   * Permet d'afficher l'image des pièces à l'ihm
+   *
+   * @param code
+   */
+  public getUrlOfFigure(code: FigureCode, color: Color): string {
+    switch (code) {
+      case FigureCode.pawn: {
+        return color === Color.white
+          ? 'assets/img/figures/WhitePawn.png'
+          : 'assets/img/figures/BlackPawn.png';
+      }
+      case FigureCode.bishop: {
+        return color === Color.white
+          ? 'assets/img/figures/WhiteBishop.png'
+          : 'assets/img/figures/BlackBishop.png';
+      }
+      case FigureCode.knight: {
+        return color === Color.white
+          ? 'assets/img/figures/WhiteKnight.png'
+          : 'assets/img/figures/BlackKnight.png';
+      }
+      case FigureCode.rook: {
+        return color === Color.white
+          ? 'assets/img/figures/WhiteRook.png'
+          : 'assets/img/figures/BlackRook.png';
+      }
+      case FigureCode.queen: {
+        return color === Color.white
+          ? 'assets/img/figures/WhiteQueen.png'
+          : 'assets/img/figures/BlackQueen.png';
+      }
+      case FigureCode.king: {
+        return color === Color.white
+          ? 'assets/img/figures/WhiteKing.png'
+          : 'assets/img/figures/BlackKing.png';
+      }
+    }
   }
 }
