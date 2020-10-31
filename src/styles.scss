@@ -1,6 +1,9 @@
 html,
 head,
 body {
-  background-color: rgb(60, 60, 60);
+  background-image: url(./assets/img/background.jpg);
+  background-position: center; 
+  background-repeat: no-repeat;
+  background-size: cover;
   color: white;
 }
