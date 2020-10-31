@@ -20,32 +20,31 @@ td .content {
   left: 0;
   right: 0;
 }
-.content:hover {
-  background: rgb(94, 13, 148);
-}
+.hoverClass:hover {
+  border-style: solid;
+  color: white;
+} 
 .black {
-  background: rgb(16, 40, 175);
+  background-image: url("../../../../assets/img/squares/blackSquare.png");
 }
 .white {
-  background: rgb(162, 174, 255);
+  background-image: url("../../../../assets/img/squares/whiteSquare.png");
 }
 .green {
-  background: green;
+  border-style: solid;
+  color: white;
 }
 .red {
-  background: red;
+  border-style: solid;
+  color: red;
 }
 .blue {
-  background: rgb(94, 13, 148);
+  border-style: solid;
+  color: white;
 }
 .yellow {
-  background: goldenrod;
-}
-.blackFont {
-  color: rgb(0, 0, 0);
-}
-.whiteFont {
-  color: rgb(238, 238, 238);
+  border-style: dotted;
+  color: white;
 }
 .fit {
   width: 100%;

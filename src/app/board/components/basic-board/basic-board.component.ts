@@ -271,12 +271,22 @@ export class BasicBoardComponent implements OnInit {
 
   /**
    * Pour vérifier dans le html si une case est d'une certaine couleur
+   * (c'est à dire d'un certain style css)
    *
    * @param squareColor
    * @param color
    */
   public isColored(squareColor: Color, color: string): boolean {
     return this.utilsService.isColored(squareColor, color);
+  }
+
+  /**
+   * Pour attribuer la couleur noire ou blanche aux cases
+   *
+   * @param square
+   */
+  public isBlackElseWhite(square: Square): boolean {
+    return this.utilsService.isBlackElseWhite(square);
   }
 
   /**

@@ -7,8 +7,9 @@
             <div
               class="content"
               [ngClass]="{
-                white: isColored(squareToDisplay.color, 'white'),
-                black: isColored(squareToDisplay.color, 'black'),
+                hoverClass: !!squareToDisplay.figure,
+                white: !isBlackElseWhite(squareToDisplay),
+                black: isBlackElseWhite(squareToDisplay),
                 green: isColored(squareToDisplay.color, 'green'),
                 red: isColored(squareToDisplay.color, 'red'),
                 blue: isColored(squareToDisplay.color, 'blue'),
@@ -16,17 +17,6 @@
               }"
               (click)="onClick(squareToDisplay)"
             >
-              <!-- <h1
-                *ngIf="!!squareToDisplay.figure"
-                class="d-flex justify-content-center align-items-center"
-                [ngClass]="{
-                  whiteFont: isColored(squareToDisplay.figure.color, 'white'),
-                  blackFont: isColored(squareToDisplay.figure.color, 'black')
-                }"
-              >
-                {{ squareToDisplay.figure.code }}
-              </h1> -->
-
               <img
                 *ngIf="!!squareToDisplay.figure"
                 class="fit"

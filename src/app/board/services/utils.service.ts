@@ -59,6 +59,7 @@ export class UtilsService {
 
   /**
    * Pour vérifier si une case est d'une certaine couleur
+   * (c'est à dire d'un certain style css)
    *
    * @param squareColor
    * @param color
@@ -66,14 +67,6 @@ export class UtilsService {
   public isColored(squareColor: Color, color: string): boolean {
     let isColored = false;
     switch (color) {
-      case 'white': {
-        isColored = squareColor === Color.white;
-        break;
-      }
-      case 'black': {
-        isColored = squareColor === Color.black;
-        break;
-      }
       case 'green': {
         isColored = squareColor === Color.green;
         break;
@@ -95,5 +88,14 @@ export class UtilsService {
       }
     }
     return isColored;
+  }
+
+  /**
+   * Pour attribuer la couleur noire ou blanche aux cases
+   *
+   * @param square
+   */
+  public isBlackElseWhite(square: Square): boolean {
+    return (square.position.row.value + square.position.column.value) % 2 === 0;
   }
 }
