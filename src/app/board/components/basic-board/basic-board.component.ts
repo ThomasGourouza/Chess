@@ -32,7 +32,6 @@ export class BasicBoardComponent implements OnInit {
   public originSquare: Square;
   public targetSquare: Square;
   public isPromotion: boolean;
-  public moveForHistory: Itinerary;
 
   constructor(
     private boardService: BoardService,
@@ -60,13 +59,19 @@ export class BasicBoardComponent implements OnInit {
     if (!this.isPromotion) {
       // deuxième click
       if (this.originSquare != null && this.originSquare.figure != null) {
+        const color = this.originSquare.figure.color;
         this.targetSquare = square;
         // Remise des couleurs d'origine des cases
         this.boardService.resetBoardColors(this.board);
         // Si la case sélectionnée est autorisée
         if (
           this.moveService
-            .possibleSquares(this.originSquare.figure, this.board, this.history)
+            .possibleSquares(
+              this.originSquare.figure,
+              this.board,
+              this.history,
+              true
+            )
             .includes(this.targetSquare)
         ) {
           // Colore les cases d'origine et d'arrivée
@@ -77,6 +82,19 @@ export class BasicBoardComponent implements OnInit {
             this.targetSquare,
             this.board
           );
+          // identifie les échecs
+          this.moveService.setCheck(this.board, this.history);
+          // identifie l'échec et mat
+          if (
+            this.moveService.isCheckMate(
+              this.board,
+              color === Color.white ? Color.black : Color.white,
+              this.history
+            )
+          ) {
+            console.log('Échec et mat!');
+          }
+          // TODO: identifie le pat
         } else {
           // Réinitialisation des cases d'arrivée et d'origine
           this.initSelectedSquares();
@@ -96,6 +114,15 @@ export class BasicBoardComponent implements OnInit {
       }
       this.squareSelectEmitter.emit(this.originSquare);
     }
+  }
+
+  /**
+   * Vérifie si le roi est en échec (utilisé dans le html)
+   *
+   * @param king
+   */
+  public isCheck(king: Figure): boolean {
+    return king != null && king.isCheck;
   }
 
   /**
@@ -182,13 +209,13 @@ export class BasicBoardComponent implements OnInit {
     board: Array<Square>
   ): void {
     // construction du coup à envoyer à l'historique
-    this.moveForHistory = {
+    const moveForHistory = {
       figure: figureToMove,
       origin: originSquare.position,
       target: targetSquare.position,
     };
     // Envoi du coup à l'historique
-    this.moveEmitter.emit(this.moveForHistory);
+    this.moveEmitter.emit(moveForHistory);
     // Cas de la prise en passant
     if (
       figureToMove.name === FigureName.pawn &&
@@ -208,7 +235,6 @@ export class BasicBoardComponent implements OnInit {
       this.utilsService.equalsPosition(s.position, originSquare.position)
     ).figure = null;
     // Ajout de la pièce sur la case d'arrivée
-    //TODO: capture
     board.find((s) =>
       this.utilsService.equalsPosition(s.position, targetSquare.position)
     ).figure = figureToMove;

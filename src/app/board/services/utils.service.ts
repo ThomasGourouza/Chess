@@ -14,9 +14,14 @@ export class UtilsService {
    * @param squareGroup
    */
   public copyOf(squareGroup: Array<Square>): Array<Square> {
-    const copy = [];
+    const copy: Array<Square> = [];
     squareGroup.map((square) => {
-      copy.push(square);
+      const copySquare: Square = {
+        position: square.position,
+        color: square.color,
+        figure: square.figure,
+      };
+      copy.push(copySquare);
     });
     return copy;
   }

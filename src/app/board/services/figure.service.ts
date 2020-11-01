@@ -137,6 +137,9 @@ export class FigureService {
     figure.value = value;
     figure.name = FigureName[name];
     figure.code = FigureCode[name];
+    if (figure.name === FigureName.king) {
+      figure.isCheck = false;
+    }
     return figure;
   }
 
@@ -211,7 +214,8 @@ export interface Figure {
   code: FigureCode;
   color: Color;
   position: Position;
-  side?: Side;
+  side?: Side; // Pour les tours (utilisé pour le roque)
+  isCheck?: boolean; // Pour les rois
 }
 export enum Color {
   black = 'BLACK',

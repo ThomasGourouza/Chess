@@ -1,7 +1,13 @@
 import { Injectable } from '@angular/core';
-import { FigureService, Color, Figure, Position } from './figure.service';
+import {
+  FigureService,
+  Color,
+  Figure,
+  Position,
+} from './figure.service';
 import { Move } from './history.service';
 import { MoveService } from './moveService/Move.service';
+import { UtilsService } from './utils.service';
 
 @Injectable({
   providedIn: 'root',
@@ -9,7 +15,8 @@ import { MoveService } from './moveService/Move.service';
 export class BoardService {
   constructor(
     private figureService: FigureService,
-    private moveService: MoveService
+    private moveService: MoveService,
+    private utilsService: UtilsService
   ) {}
 
   /**
@@ -63,7 +70,7 @@ export class BoardService {
   ): void {
     // Coloration de toutes les cases de destination possibles
     this.moveService
-      .possibleSquares(figure, board, history)
+      .possibleSquares(figure, board, history, true)
       .map((square: Square) => {
         square.color = Color.green;
       });

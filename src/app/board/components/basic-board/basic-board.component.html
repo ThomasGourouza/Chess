@@ -11,9 +11,9 @@
                 white: !isBlackElseWhite(squareToDisplay),
                 black: isBlackElseWhite(squareToDisplay),
                 green: isColored(squareToDisplay.color, 'green'),
-                red: isColored(squareToDisplay.color, 'red'),
                 blue: isColored(squareToDisplay.color, 'blue'),
-                yellow: isColored(squareToDisplay.color, 'yellow')
+                yellow: isColored(squareToDisplay.color, 'yellow'),
+                red: isCheck(squareToDisplay.figure)
               }"
               (click)="onClick(squareToDisplay)"
             >

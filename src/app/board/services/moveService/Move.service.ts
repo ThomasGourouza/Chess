@@ -19,6 +19,167 @@ export class MoveService {
   ) {}
 
   /**
+   * Réduit les possibilités de déplacement pour la sécurité du roi
+   *
+   * @param possibleSquares
+   * @param king
+   * @param board
+   * @param history
+   */
+  public noSelfCheckConstraint(
+    possibleSquares: Array<Square>,
+    figure: Figure,
+    board: Array<Square>,
+    history: Array<Move>
+  ): Array<Square> {
+    return possibleSquares.filter((square) => {
+      const figureMoved = {
+        value: figure.value,
+        name: figure.name,
+        code: figure.code,
+        color: figure.color,
+        position: square.position,
+      };
+      // Création d'un faux échiquier pour chaque mouvement possible de la pièce
+      const fakeBoard = this.utilsService.copyOf(board);
+      // Suppression de la piece de la case de départ
+      fakeBoard.find((s) =>
+        this.utilsService.equalsPosition(s.position, figure.position)
+      ).figure = null;
+      // Ajout de la pièce sur la case d'arrivée
+      fakeBoard.find((s) =>
+        this.utilsService.equalsPosition(s.position, square.position)
+      ).figure = figureMoved;
+      return !fakeBoard.some(
+        (s) =>
+          s.figure != null &&
+          s.figure.color != figure.color &&
+          this.possibleSquares(s.figure, fakeBoard, history, false).some(
+            (possibleSquare) => {
+              const king =
+                figure.name === FigureName.king
+                  ? figureMoved
+                  : board.find(
+                      (s) =>
+                        s.figure != null &&
+                        s.figure.color === figure.color &&
+                        s.figure.name === FigureName.king
+                    ).figure;
+              return this.utilsService.equalsPosition(
+                possibleSquare.position,
+                king.position
+              );
+            }
+          )
+      );
+    });
+  }
+
+  /**
+   * Permet d'identifier si il y a échec et mat sur l'échiquier
+   *
+   * @param board
+   * @param color
+   * @param history
+   */
+  public isCheckMate(
+    board: Array<Square>,
+    color: Color,
+    history: Array<Move>
+  ): boolean {
+    return (
+      this.isCheck(board, color) &&
+      !this.isPossibleToMove(board, color, history)
+    );
+  }
+
+  /**
+   * Permet d'identifier si il y a pat
+   *
+   * @param board
+   * @param color
+   * @param history
+   */
+  public isPat(
+    board: Array<Square>,
+    color: Color,
+    history: Array<Move>
+  ): boolean {
+    return (
+      !this.isCheck(board, color) &&
+      !this.isPossibleToMove(board, color, history)
+    );
+  }
+
+  /**
+   * Permet d'identifier si il y a échec
+   *
+   * @param board
+   * @param color
+   */
+  private isCheck(board: Array<Square>, color: Color): boolean {
+    return board.find(
+      (square) =>
+        square.figure != null &&
+        square.figure.color === color &&
+        square.figure.name === FigureName.king
+    ).figure.isCheck;
+  }
+
+  /**
+   * Permet d'identifier si il y a des possibilités de mouvement
+   *
+   * @param board
+   * @param color
+   * @param history
+   */
+  private isPossibleToMove(
+    board: Array<Square>,
+    color: Color,
+    history: Array<Move>
+  ): boolean {
+    return board
+      .filter(
+        (square) => square.figure != null && square.figure.color === color
+      )
+      .some(
+        (square) =>
+          this.possibleSquares(square.figure, board, history, true).length > 0
+      );
+  }
+
+  /**
+   * Valorise l'attribut permettant de savoir si le roi est en échec
+   *
+   * @param board
+   * @param history
+   */
+  public setCheck(board: Array<Square>, history: Array<Move>): void {
+    board
+      .filter(
+        (square) =>
+          square.figure != null && square.figure.name === FigureName.king
+      )
+      .map((kingSquare) => {
+        kingSquare.figure.isCheck = board
+          .filter((s) => s.figure != null)
+          .some((s) =>
+            this.possibleSquares(
+              s.figure,
+              board,
+              history,
+              false
+            ).some((possibleSquare) =>
+              this.utilsService.equalsPosition(
+                possibleSquare.position,
+                kingSquare.position
+              )
+            )
+          );
+      });
+  }
+
+  /**
    * Décrit les mouvements autorisés pour chaque pièce de l'échiquier
    *
    * @param figure
@@ -27,13 +188,15 @@ export class MoveService {
   public possibleSquares(
     figure: Figure,
     board: Array<Square>,
-    history: Array<Move>
+    history: Array<Move>,
+    kingSafety: boolean
   ): Array<Square> {
     return this.moveConstraintForFigure(
       figure,
       this.basicPossibleMovesForFigure(figure, board),
       board,
-      history
+      history,
+      kingSafety
     );
   }
 
@@ -123,7 +286,8 @@ export class MoveService {
     figure: Figure,
     basicPossibleSquares: Array<Square>,
     board: Array<Square>,
-    history: Array<Move>
+    history: Array<Move>,
+    kingSafety: boolean
   ): Array<Square> {
     let possibleSquares = basicPossibleSquares.filter(
       (square) => square.figure == null || square.figure.color != figure.color
@@ -135,6 +299,8 @@ export class MoveService {
         if (figure.color === Color.white && figure.position.row.value === 5) {
           const PreviousBlackMove = history[history.length - 1].blackMove;
           if (
+            PreviousBlackMove != null &&
+            PreviousBlackMove.figure != null &&
             PreviousBlackMove.figure.name === FigureName.pawn &&
             PreviousBlackMove.origin.row.value === 7 &&
             PreviousBlackMove.target.row.value === 5
@@ -196,7 +362,7 @@ export class MoveService {
       case FigureName.king: {
         const castleSquares: Array<Square> = [];
         // Roque roi blanc à droite
-        // TODO: interdit de traverser une case attaquée
+        // TODO: interdit de traverser une case défendue
         if (
           figure.color === Color.white &&
           !this.moveConditionService.hasFigureAlreadyMoved(
@@ -244,7 +410,7 @@ export class MoveService {
           }
         }
         // Roque roi noir à droite
-        // TODO: interdit de traverser case attaquée
+        // TODO: interdit de traverser case défendue
         if (
           figure.color === Color.black &&
           !this.moveConditionService.hasFigureAlreadyMoved(
@@ -319,8 +485,61 @@ export class MoveService {
         break;
       }
     }
-    return possibleSquares;
+    return kingSafety
+      ? this.noSelfCheckConstraint(possibleSquares, figure, board, history)
+      : possibleSquares;
   }
+
+  /**
+   * Assure que le roi ne puisse pas se déplacer sur une case défendue
+   * en enlevant ces cases de ses possibilités
+   *
+   * @param possibleSquares
+   * @param king
+   * @param board
+   * @param history
+   */
+  // private safeSquaresForKing(
+  //   possibleSquares: Array<Square>,
+  //   king: Figure,
+  //   board: Array<Square>,
+  //   history: Array<Move>
+  // ): Array<Square> {
+  //   return possibleSquares.filter((square) => {
+  //     // Création d'un faux échiquier pour chaque mouvement possible du roi
+  //     const fakeBoard = this.utilsService.copyOf(board);
+  //     // Suppression de la piece de la case de départ
+  //     fakeBoard.find((s) =>
+  //       this.utilsService.equalsPosition(s.position, king.position)
+  //     ).figure = null;
+  //     // Ajout de la pièce sur la case d'arrivée
+  //     fakeBoard.find((s) =>
+  //       this.utilsService.equalsPosition(s.position, square.position)
+  //     ).figure = {
+  //       value: king.value,
+  //       name: king.name,
+  //       code: king.code,
+  //       color: king.color,
+  //       position: square.position,
+  //     };
+  //     return !fakeBoard.some(
+  //       (s) =>
+  //         s.figure != null &&
+  //         s.figure.color != king.color &&
+  //         this.possibleSquares(
+  //           s.figure,
+  //           fakeBoard,
+  //           history,
+  //           false
+  //         ).some((possibleSquare) =>
+  //           this.utilsService.equalsPosition(
+  //             possibleSquare.position,
+  //             square.position
+  //           )
+  //         )
+  //     );
+  //   });
+  // }
 
   /**
    * Contraintes de mouvements des pièces:
@@ -335,7 +554,7 @@ export class MoveService {
     squareGroup: Array<Square>,
     removedSquares: Array<Square>
   ): Array<Square> {
-    let cleanedSquareGroup = this.utilsService.copyOf(squareGroup);
+    let cleanedSquareGroup = squareGroup;
     removedSquares.map((square) => {
       const col = square.position.column.value;
       const row = square.position.row.value;
