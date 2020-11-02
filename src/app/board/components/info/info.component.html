@@ -35,14 +35,20 @@
 <div class="d-flex justify-content-center">
   <div>
     <h3>Historique de la partie</h3>
-    <div *ngIf="history.length > 0">
-      <div *ngFor="let move of history" class="row">
-        <div class="col-2">{{ move.id }}.</div>
-        <div class="col-4">
-          {{ printMove(true, move) }}
-        </div>
-        <div class="col-4">
-          {{ printMove(false, move) }}
+    <br />
+    <div class="scroll">
+      <br />
+      <div *ngIf="history.length > 0">
+        <div *ngFor="let move of history" class="row mx-2">
+          <div class="col-2">
+            <b>{{ move.id }}.</b>
+          </div>
+          <div class="col-4">
+            <b>{{ printMove(true, move) }}</b>
+          </div>
+          <div class="col-4">
+            <b>{{ printMove(false, move) }}</b>
+          </div>
         </div>
       </div>
     </div>

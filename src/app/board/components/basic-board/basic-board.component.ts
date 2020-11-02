@@ -68,7 +68,7 @@ export class BasicBoardComponent implements OnInit {
   public canPlay(figure: Figure): boolean {
     return figure.color === this.trait;
   }
-  
+
   /**
    * Click sur une case de l'échiquier
    *
@@ -104,7 +104,7 @@ export class BasicBoardComponent implements OnInit {
           );
           // identifie les échecs
           this.moveService.setCheck(this.board, this.history);
-          // identifie la fin de la partie: mat ou pat
+          // identifie la fin de la partie: mat ou nulle
           this.scanCheckMate(color);
         } else {
           // Réinitialisation des cases d'arrivée et d'origine
@@ -128,7 +128,7 @@ export class BasicBoardComponent implements OnInit {
   }
 
   /**
-   * Vérifie si il y a mat ou pat sur l'échiquier
+   * Vérifie si il y a mat ou nulle sur l'échiquier
    *
    * @param color
    */
@@ -148,13 +148,14 @@ export class BasicBoardComponent implements OnInit {
           isWinnerBlack: !whiteWins,
         });
       }
-      // identifie le pat
+      // identifie la nulle
       if (
         this.moveService.isPat(
           this.board,
           color === Color.white ? Color.black : Color.white,
           this.history
-        )
+        ) ||
+        this.isRepetition()
       ) {
         this.endGameEmitter.emit({
           isWinnerWhite: false,
@@ -162,6 +163,18 @@ export class BasicBoardComponent implements OnInit {
         });
       }
     }
+  }
+
+  /**
+   * Identifie la répétition des coups
+   */
+  private isRepetition(): boolean {
+    return this.history.some((moveOne) => {
+      const historyWithoutSameMoves = this.history.filter(
+        (moveTwo) => !this.utilsService.equalsMove(moveOne, moveTwo)
+      );
+      return this.history.length - historyWithoutSameMoves.length > 1;
+    });
   }
 
   /**

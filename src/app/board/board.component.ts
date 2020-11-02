@@ -80,7 +80,7 @@ export class BoardComponent implements OnInit {
       this.endGameText = 'Échec et mat! Victoire des Noirs';
       this.score.black++;
     } else {
-      this.endGameText = 'Pat!';
+      this.endGameText = 'Nulle!';
       this.score.white += 0.5;
       this.score.black += 0.5;
     }

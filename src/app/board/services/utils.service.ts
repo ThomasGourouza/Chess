@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Square } from './board.service';
-import { Color, Position } from './figure.service';
+import { Color, Figure, Position } from './figure.service';
+import { Move, Itinerary } from './history.service';
 
 @Injectable({
   providedIn: 'root',
@@ -102,5 +103,54 @@ export class UtilsService {
    */
   public isBlackElseWhite(square: Square): boolean {
     return (square.position.row.value + square.position.column.value) % 2 === 0;
+  }
+
+  /**
+   * Méthode de comparaison de deux moves
+   *
+   * @param moveOne
+   * @param moveTwo
+   */
+  public equalsMove(moveOne: Move, moveTwo: Move): boolean {
+    return (
+      moveOne.id != moveTwo.id &&
+      this.equalsItinerary(moveOne.whiteMove, moveTwo.whiteMove) &&
+      ((moveOne.blackMove == null && moveTwo.blackMove == null) ||
+        (moveOne.blackMove != null &&
+          moveTwo.blackMove != null &&
+          this.equalsItinerary(moveOne.blackMove, moveTwo.blackMove)))
+    );
+  }
+
+  /**
+   * Méthode de comparaison de deux itineraries
+   *
+   * @param itineraryOne
+   * @param itineraryTwo
+   */
+  public equalsItinerary(
+    itineraryOne: Itinerary,
+    itineraryTwo: Itinerary
+  ): boolean {
+    return (
+      this.equalsFigure(itineraryOne.figure, itineraryTwo.figure) &&
+      this.equalsPosition(itineraryOne.origin, itineraryTwo.origin) &&
+      this.equalsPosition(itineraryOne.target, itineraryTwo.target)
+    );
+  }
+
+  /**
+   * Méthode de comparaison de deux figures
+   *
+   * @param figureOne
+   * @param figureTwo
+   */
+  public equalsFigure(figureOne: Figure, figureTwo: Figure): boolean {
+    return (
+      (figureOne == null && figureTwo == null) ||
+      (figureOne != null &&
+        figureTwo != null &&
+        figureOne.code === figureTwo.code)
+    );
   }
 }
