@@ -37,6 +37,8 @@ export class BasicBoardComponent implements OnInit {
   public originSquare: Square;
   public targetSquare: Square;
   public isPromotion: boolean;
+  public cpuMode: boolean;
+  public cpuPromotion: boolean;
 
   constructor(
     private boardService: BoardService,
@@ -46,6 +48,8 @@ export class BasicBoardComponent implements OnInit {
     private utilsService: UtilsService
   ) {
     this.initSelectedSquares();
+    this.cpuMode = true;
+    this.cpuPromotion = false;
   }
 
   public ngOnInit(): void {}
@@ -74,8 +78,9 @@ export class BasicBoardComponent implements OnInit {
    *
    * @param square
    */
-  public onClick(square: Square): void {
+  public onClick(square: Square, canCpuMove: boolean): void {
     if (!this.isPromotion && !this.isGameOver()) {
+      this.cpuPromotion = !canCpuMove;
       let color = null;
       // deuxième click
       if (this.originSquare != null && this.originSquare.figure != null) {
@@ -106,6 +111,10 @@ export class BasicBoardComponent implements OnInit {
           this.moveService.setCheck(this.board, this.history);
           // identifie la fin de la partie: mat ou nulle
           this.scanCheckMate(color);
+          // Coup de l'IA du programme
+          if (this.cpuMode && canCpuMove && !this.isPromotion) {
+            this.cpuMove();
+          }
         } else {
           // Réinitialisation des cases d'arrivée et d'origine
           this.initSelectedSquares();
@@ -125,6 +134,37 @@ export class BasicBoardComponent implements OnInit {
       }
       this.squareSelectEmitter.emit(this.originSquare);
     }
+  }
+
+  /**
+   * Coup de l'IA du programme
+   */
+  public cpuMove(): void {
+    // liste des pièces possibles à jouer
+    const playableFiguresSquares = this.board.filter(
+      (square) =>
+        square.figure != null &&
+        square.figure.color ===
+          (this.trait === Color.white ? Color.black : Color.white) &&
+        this.moveService.possibleSquares(
+          square.figure,
+          this.board,
+          this.history,
+          true
+        ).length > 0
+    );
+    // choisi une pièce au hasard parmi les pièces possibles
+    this.originSquare = this.utilsService.getOneRandom(playableFiguresSquares);
+    // coups possibles à jouer
+    const possibleMoves = this.moveService.possibleSquares(
+      this.originSquare.figure,
+      this.board,
+      this.history,
+      true
+    );
+    // choisi un coup au hasard parmi les coups possibles
+    const targetSquare: Square = this.utilsService.getOneRandom(possibleMoves);
+    this.onClick(targetSquare, false);
   }
 
   /**
@@ -224,8 +264,20 @@ export class BasicBoardComponent implements OnInit {
     figure.position = targetSquare.position;
     // cas de la promotion du pion
     if (this.moveConditionService.promotionCondition(figure, targetSquare)) {
-      // ouvre le composant de choix de la pièce de promotion
-      this.isPromotion = true;
+      if (!this.cpuPromotion) {
+        // ouvre le composant de choix de la pièce de promotion
+        this.isPromotion = true;
+      } else {
+        // choisi une pièce au hasard parmi les pièces possibles
+        this.buildPromotion(
+          this.utilsService.getOneRandom([
+            FigureName.bishop,
+            FigureName.rook,
+            FigureName.knight,
+            FigureName.queen,
+          ])
+        );
+      }
     } else {
       this.applyMoveFigureToSquare(figure, originSquare, targetSquare, board);
     }
@@ -238,6 +290,20 @@ export class BasicBoardComponent implements OnInit {
    * @param promotionFigureName
    */
   public onPromotion(promotionFigureName: FigureName): void {
+    this.buildPromotion(promotionFigureName);
+    // fermeture du composant de selection de promotion
+    this.isPromotion = false;
+    if (this.cpuMode) {
+      this.cpuMove();
+    }
+  }
+
+  /**
+   * Fabrique et pose la pièce de promotion
+   *
+   * @param promotionFigureName
+   */
+  private buildPromotion(promotionFigureName: FigureName): void {
     // création de la pièce de promotion choisie
     const promotionFigure = this.figureService.getPromotionFigure(
       this.targetSquare.position.row.value,
@@ -251,8 +317,6 @@ export class BasicBoardComponent implements OnInit {
       this.targetSquare,
       this.board
     );
-    // fermeture du composant de selection de promotion
-    this.isPromotion = false;
   }
 
   /**
