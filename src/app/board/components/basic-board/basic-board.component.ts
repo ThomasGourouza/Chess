@@ -27,6 +27,8 @@ export class BasicBoardComponent implements OnInit {
   public history: Array<Move>;
   @Input()
   public endGameText: string;
+  @Input()
+  public cpuMode: boolean;
   @Output()
   public squareSelectEmitter: EventEmitter<Square> = new EventEmitter<Square>();
   @Output()
@@ -37,7 +39,6 @@ export class BasicBoardComponent implements OnInit {
   public originSquare: Square;
   public targetSquare: Square;
   public isPromotion: boolean;
-  public cpuMode: boolean;
   public cpuPromotion: boolean;
 
   constructor(
@@ -48,7 +49,6 @@ export class BasicBoardComponent implements OnInit {
     private utilsService: UtilsService
   ) {
     this.initSelectedSquares();
-    this.cpuMode = true;
     this.cpuPromotion = false;
   }
 
