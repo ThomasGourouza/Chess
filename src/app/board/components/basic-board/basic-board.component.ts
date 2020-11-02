@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { EndGame } from '../../board.component';
 import { BoardService, Square } from '../../services/board.service';
 import {
   Color,
@@ -24,10 +25,14 @@ export class BasicBoardComponent implements OnInit {
   public trait: Color;
   @Input()
   public history: Array<Move>;
+  @Input()
+  public endGameText: string;
   @Output()
   public squareSelectEmitter: EventEmitter<Square> = new EventEmitter<Square>();
   @Output()
   public moveEmitter: EventEmitter<Itinerary> = new EventEmitter<Itinerary>();
+  @Output()
+  public endGameEmitter: EventEmitter<EndGame> = new EventEmitter<EndGame>();
 
   public originSquare: Square;
   public targetSquare: Square;
@@ -43,23 +48,38 @@ export class BasicBoardComponent implements OnInit {
     this.initSelectedSquares();
   }
 
-  ngOnInit(): void {}
+  public ngOnInit(): void {}
 
   private initSelectedSquares(): void {
     this.targetSquare = null;
     this.originSquare = null;
   }
 
+  public isGameOver(): boolean {
+    return this.endGameText != '';
+  }
+
+  /**
+   * Determine si une pièce peut être déplacée ou pas
+   * (utilisé dans le html)
+   *
+   * @param figure
+   */
+  public canPlay(figure: Figure): boolean {
+    return figure.color === this.trait;
+  }
+  
   /**
    * Click sur une case de l'échiquier
    *
    * @param square
    */
   public onClick(square: Square): void {
-    if (!this.isPromotion) {
+    if (!this.isPromotion && !this.isGameOver()) {
+      let color = null;
       // deuxième click
       if (this.originSquare != null && this.originSquare.figure != null) {
-        const color = this.originSquare.figure.color;
+        color = this.originSquare.figure.color;
         this.targetSquare = square;
         // Remise des couleurs d'origine des cases
         this.boardService.resetBoardColors(this.board);
@@ -84,17 +104,8 @@ export class BasicBoardComponent implements OnInit {
           );
           // identifie les échecs
           this.moveService.setCheck(this.board, this.history);
-          // identifie l'échec et mat
-          if (
-            this.moveService.isCheckMate(
-              this.board,
-              color === Color.white ? Color.black : Color.white,
-              this.history
-            )
-          ) {
-            console.log('Échec et mat!');
-          }
-          // TODO: identifie le pat
+          // identifie la fin de la partie: mat ou pat
+          this.scanCheckMate(color);
         } else {
           // Réinitialisation des cases d'arrivée et d'origine
           this.initSelectedSquares();
@@ -113,6 +124,43 @@ export class BasicBoardComponent implements OnInit {
         );
       }
       this.squareSelectEmitter.emit(this.originSquare);
+    }
+  }
+
+  /**
+   * Vérifie si il y a mat ou pat sur l'échiquier
+   *
+   * @param color
+   */
+  public scanCheckMate(color: Color): void {
+    if (color != null) {
+      // identifie l'échec et mat
+      if (
+        this.moveService.isCheckMate(
+          this.board,
+          color === Color.white ? Color.black : Color.white,
+          this.history
+        )
+      ) {
+        const whiteWins = color === Color.white;
+        this.endGameEmitter.emit({
+          isWinnerWhite: whiteWins,
+          isWinnerBlack: !whiteWins,
+        });
+      }
+      // identifie le pat
+      if (
+        this.moveService.isPat(
+          this.board,
+          color === Color.white ? Color.black : Color.white,
+          this.history
+        )
+      ) {
+        this.endGameEmitter.emit({
+          isWinnerWhite: false,
+          isWinnerBlack: false,
+        });
+      }
     }
   }
 

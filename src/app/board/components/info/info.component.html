@@ -1,6 +1,12 @@
 <div class="info">
   <div class="d-flex justify-content-center">
-    <h3>Trait aux {{ toFrench() }}</h3>
+    <div *ngIf="isEndGame()">
+      <h3>{{ endGameText }}</h3>
+      <h2>Blancs: {{ score.white }} - Noirs: {{ score.black }}</h2>
+    </div>
+    <div *ngIf="!isEndGame()">
+      <h3>Trait aux {{ traitInFrench() }}</h3>
+    </div>
   </div>
   <br />
   <div class="d-flex justify-content-center">
@@ -18,6 +24,12 @@
       </b>
     </div>
   </div>
+</div>
+<br />
+<div class="d-flex justify-content-center">
+  <button type="button" class="btn btn-success" (click)="onNewGame()">
+    Nouvelle partie
+  </button>
 </div>
 <br />
 <div class="d-flex justify-content-center">

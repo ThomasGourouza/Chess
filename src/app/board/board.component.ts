@@ -15,6 +15,8 @@ export class BoardComponent implements OnInit {
   public selectedSquare: Square;
   public history: Array<Move>;
   public trait: Color;
+  public score: Score;
+  public endGameText: string;
 
   constructor(
     private boardService: BoardService,
@@ -26,6 +28,8 @@ export class BoardComponent implements OnInit {
     this.board = this.boardService.getBoard();
     this.selectedSquare = null;
     this.history = [];
+    this.score = { white: 0, black: 0 };
+    this.endGameText = '';
     // Les blancs commencent
     this.trait = Color.white;
   }
@@ -36,8 +40,60 @@ export class BoardComponent implements OnInit {
     // Placement des pièces sur l'échiquier
     this.setFiguresOnBoard(this.figures, this.board);
     // Marquage des Tours pour distinguer celle de gauche de celle de droite
-    // (utile pour le roque)
-    this.board.map((square) => {
+    this.setRookIdentifiers(this.board);
+  }
+
+  /**
+   * émetteur pour lancer une nouvelle partie
+   *
+   * @param selectedSquare
+   */
+  public onNewGame(newGame: boolean): void {
+    if (newGame) {
+      this.endGameText = '';
+      this.figures = [];
+      this.board = this.boardService.getBoard();
+      this.selectedSquare = null;
+      // Les blancs commencent
+      this.trait = Color.white;
+      // nouvel historique
+      this.history = [];
+      // Récupération des pieces
+      this.figureService.initFigures(this.figures);
+      // Placement des pièces sur l'échiquier
+      this.setFiguresOnBoard(this.figures, this.board);
+      // Marquage des Tours pour distinguer celle de gauche de celle de droite
+      this.setRookIdentifiers(this.board);
+    }
+  }
+
+  /**
+   * émetteur pour la fin de la partie
+   *
+   * @param endGame
+   */
+  public onEndGame(endGame: EndGame): void {
+    if (endGame.isWinnerWhite) {
+      this.endGameText = 'Échec et mat! Victoire des blancs';
+      this.score.white++;
+    } else if (endGame.isWinnerBlack) {
+      this.endGameText = 'Échec et mat! Victoire des Noirs';
+      this.score.black++;
+    } else {
+      this.endGameText = 'Pat!';
+      this.score.white += 0.5;
+      this.score.black += 0.5;
+    }
+  }
+
+  /**
+   * Marquage des Tours pour distinguer celle de gauche de celle de droite
+   * (utile pour le roque)
+   *
+   * @param board
+   */
+  public setRookIdentifiers(board: Array<Square>): void {
+    board.map((square) => {
       if (
         this.utilsService.isSquareAt(square, 1, 1) ||
         this.utilsService.isSquareAt(square, 1, 8)
@@ -88,4 +144,12 @@ export class BoardComponent implements OnInit {
       ).figure = figure;
     });
   }
+}
+export interface EndGame {
+  isWinnerWhite: boolean;
+  isWinnerBlack: boolean;
+}
+export interface Score {
+  white: number;
+  black: number;
 }

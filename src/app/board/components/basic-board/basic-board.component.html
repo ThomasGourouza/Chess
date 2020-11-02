@@ -7,7 +7,10 @@
             <div
               class="content"
               [ngClass]="{
-                hoverClass: !!squareToDisplay.figure,
+                hoverClass:
+                  !!squareToDisplay.figure &&
+                  canPlay(squareToDisplay.figure) &&
+                  !isGameOver(),
                 white: !isBlackElseWhite(squareToDisplay),
                 black: isBlackElseWhite(squareToDisplay),
                 green: isColored(squareToDisplay.color, 'green'),
@@ -41,3 +44,4 @@
     ></app-promotion-selection>
   </div>
 </div>
+<br />

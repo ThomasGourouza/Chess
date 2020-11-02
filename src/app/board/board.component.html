@@ -5,6 +5,9 @@
         [selectedSquare]="selectedSquare"
         [history]="history"
         [trait]="trait"
+        [score]="score"
+        [endGameText]="endGameText"
+        (newGameEmitter)="onNewGame($event)"
       ></app-info>
     </div>
     <div class="col">
@@ -12,6 +15,8 @@
         [board]="board"
         [trait]="trait"
         [history]="history"
+        [endGameText]="endGameText"
+        (endGameEmitter)="onEndGame($event)"
         (squareSelectEmitter)="onSquareSelect($event)"
         (moveEmitter)="onMove($event)"
       ></app-basic-board>
