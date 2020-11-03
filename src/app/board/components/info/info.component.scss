@@ -1,12 +1,15 @@
 .info {
-  height: 25%;
+  height: 20%;
+}
+.infoFigure {
+  height: 70px;
 }
 div.scroll {
   background-image: url(../../../../assets/img/histo/histoWallpaper.png);
   background-position: center;
   background-repeat: no-repeat;
   background-size: 120%;
-  height: 300px;
+  height: 250px;
   width: 100%;
   overflow: scroll;
 }
