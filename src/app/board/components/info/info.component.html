@@ -27,9 +27,18 @@
 </div>
 <br />
 <div class="d-flex justify-content-center">
-  <button type="button" class="btn btn-success" (click)="onNewGame()">
-    Nouvelle partie
-  </button>
+  <div class="row">
+    <div class="col">
+      <button type="button" class="btn btn-success" (click)="onNewGame()">
+        Nouvelle partie
+      </button>
+    </div>
+    <div class="col">
+      <button type="button" class="btn btn-success" (click)="onNewGameAI()">
+        Nouvelle partie contre l'IA
+      </button>
+    </div>
+  </div>
 </div>
 <br />
 <div class="d-flex justify-content-center">

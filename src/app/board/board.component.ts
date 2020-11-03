@@ -52,22 +52,41 @@ export class BoardComponent implements OnInit {
    */
   public onNewGame(newGame: boolean): void {
     if (newGame) {
-      this.endGameText = '';
-      this.figures = [];
-      this.board = this.boardService.getBoard();
-      this.selectedSquare = null;
-      // Les blancs commencent
-      this.trait = Color.white;
-      // nouvel historique
-      this.history = [];
-      // Récupération des pieces
-      this.figureService.initFigures(this.figures);
-      // Placement des pièces sur l'échiquier
-      this.setFiguresOnBoard(this.figures, this.board);
-      // Marquage des Tours pour distinguer celle de gauche de celle de droite
-      this.setRookIdentifiers(this.board);
-      this.cpuMode = confirm("Jouer contre l'intelligence artificielle?");
+      this.newGame();
+      this.cpuMode = false;
     }
+  }
+
+  /**
+   * émetteur pour lancer une nouvelle partie contre l'IA
+   *
+   * @param selectedSquare
+   */
+  public onNewGameAI(newGame: boolean): void {
+    if (newGame) {
+      this.newGame();
+      this.cpuMode = true;
+    }
+  }
+
+  /**
+   * Lance une nouvelle partie
+   */
+  public newGame(): void {
+    this.endGameText = '';
+    this.figures = [];
+    this.board = this.boardService.getBoard();
+    this.selectedSquare = null;
+    // Les blancs commencent
+    this.trait = Color.white;
+    // nouvel historique
+    this.history = [];
+    // Récupération des pieces
+    this.figureService.initFigures(this.figures);
+    // Placement des pièces sur l'échiquier
+    this.setFiguresOnBoard(this.figures, this.board);
+    // Marquage des Tours pour distinguer celle de gauche de celle de droite
+    this.setRookIdentifiers(this.board);
   }
 
   /**

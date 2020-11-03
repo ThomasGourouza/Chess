@@ -22,6 +22,8 @@ export class InfoComponent implements OnInit {
   public endGameText: string;
   @Output()
   public newGameEmitter: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Output()
+  public newGameAIEmitter: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   constructor() {}
 
@@ -32,6 +34,15 @@ export class InfoComponent implements OnInit {
    */
   public onNewGame(): void {
     this.newGameEmitter.emit(confirm('Lancer une nouvelle partie ?'));
+  }
+
+  /**
+   * Pour commencer une nouvelle partie contre l'IA
+   */
+  public onNewGameAI(): void {
+    this.newGameAIEmitter.emit(
+      confirm("Lancer une nouvelle partie contre l'IA?")
+    );
   }
 
   /**
