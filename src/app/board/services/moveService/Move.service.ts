@@ -362,7 +362,6 @@ export class MoveService {
       case FigureName.king: {
         const castleSquares: Array<Square> = [];
         // Roque roi blanc à droite
-        // TODO: interdit de traverser une case défendue
         if (
           figure.color === Color.white &&
           !this.moveConditionService.hasFigureAlreadyMoved(
@@ -410,7 +409,6 @@ export class MoveService {
           }
         }
         // Roque roi noir à droite
-        // TODO: interdit de traverser case défendue
         if (
           figure.color === Color.black &&
           !this.moveConditionService.hasFigureAlreadyMoved(
@@ -462,6 +460,22 @@ export class MoveService {
             possibleSquares.push(s);
           });
         }
+        // intedit au roi de roquer en traversant des cases ataquées
+        possibleSquares = kingSafety
+          ? this.noSelfCheckConstraint(possibleSquares, figure, board, history)
+          : possibleSquares;
+        const basicPossibleSquaresOfKing = basicPossibleSquares.filter(
+          (square) =>
+            square.figure == null || square.figure.color != figure.color
+        );
+        const removedSquares = basicPossibleSquaresOfKing.filter(
+          (s) => !possibleSquares.includes(s)
+        );
+        possibleSquares = this.applyConstraints(
+          figure,
+          possibleSquares,
+          removedSquares
+        );
         break;
       }
       case FigureName.rook:
@@ -489,57 +503,6 @@ export class MoveService {
       ? this.noSelfCheckConstraint(possibleSquares, figure, board, history)
       : possibleSquares;
   }
-
-  /**
-   * Assure que le roi ne puisse pas se déplacer sur une case défendue
-   * en enlevant ces cases de ses possibilités
-   *
-   * @param possibleSquares
-   * @param king
-   * @param board
-   * @param history
-   */
-  // private safeSquaresForKing(
-  //   possibleSquares: Array<Square>,
-  //   king: Figure,
-  //   board: Array<Square>,
-  //   history: Array<Move>
-  // ): Array<Square> {
-  //   return possibleSquares.filter((square) => {
-  //     // Création d'un faux échiquier pour chaque mouvement possible du roi
-  //     const fakeBoard = this.utilsService.copyOf(board);
-  //     // Suppression de la piece de la case de départ
-  //     fakeBoard.find((s) =>
-  //       this.utilsService.equalsPosition(s.position, king.position)
-  //     ).figure = null;
-  //     // Ajout de la pièce sur la case d'arrivée
-  //     fakeBoard.find((s) =>
-  //       this.utilsService.equalsPosition(s.position, square.position)
-  //     ).figure = {
-  //       value: king.value,
-  //       name: king.name,
-  //       code: king.code,
-  //       color: king.color,
-  //       position: square.position,
-  //     };
-  //     return !fakeBoard.some(
-  //       (s) =>
-  //         s.figure != null &&
-  //         s.figure.color != king.color &&
-  //         this.possibleSquares(
-  //           s.figure,
-  //           fakeBoard,
-  //           history,
-  //           false
-  //         ).some((possibleSquare) =>
-  //           this.utilsService.equalsPosition(
-  //             possibleSquare.position,
-  //             square.position
-  //           )
-  //         )
-  //     );
-  //   });
-  // }
 
   /**
    * Contraintes de mouvements des pièces:

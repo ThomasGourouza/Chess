@@ -17,6 +17,7 @@ export class BoardComponent implements OnInit {
   public trait: Color;
   public score: Score;
   public endGameText: string;
+  public cpuMode: boolean;
 
   constructor(
     private boardService: BoardService,
@@ -32,6 +33,7 @@ export class BoardComponent implements OnInit {
     this.endGameText = '';
     // Les blancs commencent
     this.trait = Color.white;
+    this.cpuMode = true;
   }
 
   public ngOnInit(): void {
@@ -64,6 +66,7 @@ export class BoardComponent implements OnInit {
       this.setFiguresOnBoard(this.figures, this.board);
       // Marquage des Tours pour distinguer celle de gauche de celle de droite
       this.setRookIdentifiers(this.board);
+      this.cpuMode = confirm("Jouer contre l'intelligence artificielle?");
     }
   }
 

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Square } from './board.service';
-import { Color, Figure, Position } from './figure.service';
+import { Color, Figure, FigureName, Position } from './figure.service';
 import { Move, Itinerary } from './history.service';
 
 @Injectable({
@@ -152,5 +152,24 @@ export class UtilsService {
         figureTwo != null &&
         figureOne.code === figureTwo.code)
     );
+  }
+
+  /**
+   * Renvoie un nombre aléatoire entre min (inclu) et max (exclu)
+   *
+   * @param min
+   * @param max
+   */
+  public getRandomInt(min: number, max: number): number {
+    return Math.floor(Math.random() * (max - min)) + min;
+  }
+
+  /**
+   * Renvoie un élément d'un tableau au hasard
+   *
+   * @param array
+   */
+  public getOneRandom(array: Array<any>): any {
+    return array[this.getRandomInt(0, array.length)];
   }
 }
