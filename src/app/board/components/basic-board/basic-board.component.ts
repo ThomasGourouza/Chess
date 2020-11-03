@@ -112,7 +112,12 @@ export class BasicBoardComponent implements OnInit {
           // identifie la fin de la partie: mat ou nulle
           this.scanCheckMate(color);
           // Coup de l'IA du programme
-          if (this.cpuMode && canCpuMove && !this.isPromotion) {
+          if (
+            this.cpuMode &&
+            canCpuMove &&
+            !this.isPromotion &&
+            !this.isGameOver()
+          ) {
             this.cpuMove();
           }
         } else {
@@ -153,18 +158,26 @@ export class BasicBoardComponent implements OnInit {
           true
         ).length > 0
     );
-    // choisi une pièce au hasard parmi les pièces possibles
-    this.originSquare = this.utilsService.getOneRandom(playableFiguresSquares);
-    // coups possibles à jouer
-    const possibleMoves = this.moveService.possibleSquares(
-      this.originSquare.figure,
-      this.board,
-      this.history,
-      true
-    );
-    // choisi un coup au hasard parmi les coups possibles
-    const targetSquare: Square = this.utilsService.getOneRandom(possibleMoves);
-    this.onClick(targetSquare, false);
+    if (playableFiguresSquares.length > 0) {
+      // choisi une pièce au hasard parmi les pièces possibles
+      this.originSquare = this.utilsService.getOneRandom(
+        playableFiguresSquares
+      );
+      // coups possibles à jouer
+      const possibleMoves = this.moveService.possibleSquares(
+        this.originSquare.figure,
+        this.board,
+        this.history,
+        true
+      );
+      if (possibleMoves.length > 0) {
+        // choisi un coup au hasard parmi les coups possibles
+        const targetSquare: Square = this.utilsService.getOneRandom(
+          possibleMoves
+        );
+        this.onClick(targetSquare, false);
+      }
+    }
   }
 
   /**
