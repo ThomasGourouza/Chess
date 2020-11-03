@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Score } from '../../board.component';
+import { NewGame, Score } from '../../board.component';
 import { Square } from '../../services/board.service';
 import { Color } from '../../services/figure.service';
 import { Move } from '../../services/history.service';
@@ -21,9 +21,7 @@ export class InfoComponent implements OnInit {
   @Input()
   public endGameText: string;
   @Output()
-  public newGameEmitter: EventEmitter<boolean> = new EventEmitter<boolean>();
-  @Output()
-  public newGameAIEmitter: EventEmitter<boolean> = new EventEmitter<boolean>();
+  public newGameEmitter: EventEmitter<NewGame> = new EventEmitter<NewGame>();
 
   constructor() {}
 
@@ -32,17 +30,15 @@ export class InfoComponent implements OnInit {
   /**
    * Pour commencer une nouvelle partie
    */
-  public onNewGame(): void {
-    this.newGameEmitter.emit(confirm('Lancer une nouvelle partie ?'));
-  }
-
-  /**
-   * Pour commencer une nouvelle partie contre l'IA
-   */
-  public onNewGameAI(): void {
-    this.newGameAIEmitter.emit(
-      confirm("Lancer une nouvelle partie contre l'IA?")
-    );
+  public onNewGame(isAI: boolean): void {
+    this.newGameEmitter.emit({
+      isNewGame: confirm(
+        isAI
+          ? "Lancer une nouvelle partie contre l'IA ?"
+          : 'Lancer une nouvelle partie ?'
+      ),
+      isAI: isAI,
+    });
   }
 
   /**

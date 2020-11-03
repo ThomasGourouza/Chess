@@ -50,43 +50,25 @@ export class BoardComponent implements OnInit {
    *
    * @param selectedSquare
    */
-  public onNewGame(newGame: boolean): void {
-    if (newGame) {
-      this.newGame();
-      this.cpuMode = false;
+  public onNewGame(newGame: NewGame): void {
+    if (newGame.isNewGame) {
+      this.endGameText = '';
+      this.figures = [];
+      this.board = this.boardService.getBoard();
+      this.selectedSquare = null;
+      // Les blancs commencent
+      this.trait = Color.white;
+      // nouvel historique
+      this.history = [];
+      // Récupération des pieces
+      this.figureService.initFigures(this.figures);
+      // Placement des pièces sur l'échiquier
+      this.setFiguresOnBoard(this.figures, this.board);
+      // Marquage des Tours pour distinguer celle de gauche de celle de droite
+      this.setRookIdentifiers(this.board);
+      // choix du mode
+      this.cpuMode = newGame.isAI;
     }
-  }
-
-  /**
-   * émetteur pour lancer une nouvelle partie contre l'IA
-   *
-   * @param selectedSquare
-   */
-  public onNewGameAI(newGame: boolean): void {
-    if (newGame) {
-      this.newGame();
-      this.cpuMode = true;
-    }
-  }
-
-  /**
-   * Lance une nouvelle partie
-   */
-  public newGame(): void {
-    this.endGameText = '';
-    this.figures = [];
-    this.board = this.boardService.getBoard();
-    this.selectedSquare = null;
-    // Les blancs commencent
-    this.trait = Color.white;
-    // nouvel historique
-    this.history = [];
-    // Récupération des pieces
-    this.figureService.initFigures(this.figures);
-    // Placement des pièces sur l'échiquier
-    this.setFiguresOnBoard(this.figures, this.board);
-    // Marquage des Tours pour distinguer celle de gauche de celle de droite
-    this.setRookIdentifiers(this.board);
   }
 
   /**
@@ -170,6 +152,10 @@ export class BoardComponent implements OnInit {
 export interface EndGame {
   isWinnerWhite: boolean;
   isWinnerBlack: boolean;
+}
+export interface NewGame {
+  isNewGame: boolean;
+  isAI: boolean;
 }
 export interface Score {
   white: number;
