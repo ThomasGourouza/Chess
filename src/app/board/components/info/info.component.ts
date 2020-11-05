@@ -1,5 +1,4 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { normalize } from 'path';
 import { NewGame, Score } from '../../board.component';
 import { Square } from '../../services/board.service';
 import { Color, FigureName } from '../../services/figure.service';
