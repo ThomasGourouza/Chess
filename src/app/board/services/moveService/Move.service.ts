@@ -4,6 +4,7 @@ import { Square } from '../board.service';
 import { UtilsService } from '../utils.service';
 import { MoveConditionService } from './move-condition.service';
 import { Move } from '../history.service';
+import { brotliDecompress } from 'zlib';
 
 @Injectable({
   providedIn: 'root',
@@ -296,6 +297,7 @@ export class MoveService {
       case FigureName.pawn: {
         // prise en passant
         let enPassantSquare: Square = null;
+        // cas du pion blanc
         if (figure.color === Color.white && figure.position.row.value === 5) {
           const PreviousBlackMove = history[history.length - 1].blackMove;
           if (
@@ -313,6 +315,7 @@ export class MoveService {
             );
           }
         }
+        // cas du pion noir
         if (figure.color === Color.black && figure.position.row.value === 4) {
           const PreviousWhiteMove = history[history.length - 1].whiteMove;
           if (
@@ -328,6 +331,7 @@ export class MoveService {
             );
           }
         }
+        // prise normale
         const pawnRow = figure.position.row.value;
         const pawnColumn = figure.position.column.value;
         const opponentFigureTakable = board.filter(
@@ -349,6 +353,20 @@ export class MoveService {
         const removedSquares = basicPossibleSquares.filter(
           (square) => !possibleSquares.includes(square)
         );
+        // contrainte de l'avancée de deux cases au début
+        board
+          .filter(
+            (s) =>
+              s.figure != null &&
+              s.position.column.value === figure.position.column.value &&
+              ((figure.color === Color.white &&
+                figure.position.row.value === 2 &&
+                s.position.row.value === figure.position.row.value + 1) ||
+                (figure.color === Color.black &&
+                  figure.position.row.value === 7 &&
+                  s.position.row.value === figure.position.row.value - 1))
+          )
+          .map((s) => removedSquares.push(s));
         possibleSquares = this.applyConstraints(
           figure,
           possibleSquaresWithTake,
