@@ -4,7 +4,6 @@ import { Square } from '../board.service';
 import { UtilsService } from '../utils.service';
 import { MoveConditionService } from './move-condition.service';
 import { Move } from '../history.service';
-import { brotliDecompress } from 'zlib';
 
 @Injectable({
   providedIn: 'root',
