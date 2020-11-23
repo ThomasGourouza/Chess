@@ -13,7 +13,7 @@ export class AuthComponent implements OnInit {
 
   constructor(private authService: AuthService, private router: Router) {}
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.router.navigate(['/authentification']);
   }
 

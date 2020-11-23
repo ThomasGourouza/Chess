@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { BoardService, Square } from './services/board.service';
 import { Color } from './services/figure.service';
@@ -9,7 +9,7 @@ import { HistoryService, Itinerary, Move } from './services/history.service';
   templateUrl: './board.component.html',
   styleUrls: ['./board.component.scss'],
 })
-export class BoardComponent implements OnInit {
+export class BoardComponent implements OnInit, OnDestroy {
   public selectedSquare: Square;
 
   constructor(

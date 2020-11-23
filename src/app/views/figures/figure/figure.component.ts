@@ -15,7 +15,7 @@ export class FigureComponent implements OnInit {
 
   constructor(private figureDisplayService: FigureDisplayService) { }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
   }
 
   /**

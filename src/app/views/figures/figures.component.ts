@@ -17,8 +17,8 @@ export class FiguresComponent implements OnInit {
     this.figuresDisplay = [];
   }
 
-  ngOnInit(): void {
-    // Transformation des données pour passer au composant d'affichage
+  public ngOnInit(): void {
+    // Récupération des données pour les passer au composant d'affichage
     this.figuresDisplay = this.figureDisplayService.getFiguresDisplay();
   }
 }

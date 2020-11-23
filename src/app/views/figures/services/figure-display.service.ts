@@ -24,7 +24,7 @@ export class FigureDisplayService {
   }
 
   /**
-   * Transforme les données et supprime les doublons
+   * Renvoie les données transformées
    * @param figures
    */
   public getFiguresDisplay(): Array<FigureDisplay> {

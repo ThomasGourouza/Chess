@@ -10,11 +10,11 @@ import { UtilsService } from './utils.service';
 })
 export class BoardService {
   private _board: Array<Square>;
-  public _history: Array<Move>;
-  public _trait: Color;
-  public _score: Score;
-  public _endGameText: string;
-  public _cpuMode: boolean;
+  private _history: Array<Move>;
+  private _trait: Color;
+  private _score: Score;
+  private _endGameText: string;
+  private _cpuMode: boolean;
 
   get board(): Array<Square> {
     return this._board;

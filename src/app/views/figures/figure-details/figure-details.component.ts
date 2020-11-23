@@ -18,7 +18,7 @@ export class FigureDetailsComponent implements OnInit {
     private figureDisplayService: FigureDisplayService
   ) {}
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     // Après avoir cliqué sur une pièce (figure.component.html),
     // on navigue vers l'url figure/"name"
     // puis ici, on récupère ce "name" (défini dans app.module.ts)

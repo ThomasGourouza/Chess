@@ -16,7 +16,7 @@ export class AuthService {
     this._isAuth = value;
   }
 
-  public signIn(login: string, password: string): Promise<unknown> {
+  public signIn(login: string, password: string): Promise<boolean> {
     return new Promise((resolve) => {
       setTimeout(() => {
         resolve(login === 'tom' && password === 'mdp');

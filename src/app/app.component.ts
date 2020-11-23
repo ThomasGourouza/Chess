@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { interval, Subscription } from 'rxjs';
 import { UtilsService } from './views/board/services/utils.service';
 
 @Component({
@@ -7,11 +8,14 @@ import { UtilsService } from './views/board/services/utils.service';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
-export class AppComponent {
+export class AppComponent implements OnInit, OnDestroy {
+  public secondes: number;
+  public counterSubscription: Subscription;
   public srcLogo: string;
   private srcLogoList: Array<string>;
 
   constructor(private utilsService: UtilsService, private router: Router) {
+    this.secondes = 0;
     // initialisation du logo avec un cavalier
     this.srcLogo = 'assets/img/figures/WhiteKnight.png';
     // liste des pièces pour le logo
@@ -24,6 +28,18 @@ export class AppComponent {
       'assets/img/figures/WhiteKing.png',
     ];
   }
+  
+  public ngOnInit(): void {
+    // temps de connexion
+    this.counterSubscription = interval(1000).subscribe((s: number) => {
+      this.secondes = s + 1;
+    });
+  }
+
+  public ngOnDestroy(): void {
+    this.counterSubscription.unsubscribe();
+  }
+
   /**
    * Permet de remplacer le logo par une pièce au hasard
    */
