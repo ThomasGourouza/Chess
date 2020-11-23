@@ -1,0 +1,13 @@
+<div class="container text-center my-3">
+    <div class="card mb-3">
+        <div class="card-header alert alert-sm alert-info">
+            <h4>MessagesComponent</h4>
+            <br>
+            <input type="text" [(ngModel)]="message"/>
+        </div>
+        <div class="card-body">
+            <button (click)="sendMessage()" class="btn btn-primary mr-2">Send Message</button>
+            <button (click)="clearMessages()" class="btn btn-secondary">Clear Messages</button>
+        </div>
+    </div>
+</div>
