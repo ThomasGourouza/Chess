@@ -1,0 +1,40 @@
+<div class="mx-5 d-flex justify-content-center">
+  <div>
+    <h2>Authentification</h2>
+    <br />
+    <br />
+    <table>
+      <tr>
+        <td>
+          <label for="login">Login &nbsp;</label>
+        </td>
+        <td>
+          <input type="text" id="login" [(ngModel)]="login" />
+        </td>
+      </tr>
+      <br />
+      <tr>
+        <td>
+          <label for="password">Password &nbsp;</label>
+        </td>
+        <td>
+          <input type="password" id="password" [(ngModel)]="password" />
+        </td>
+      </tr>
+    </table>
+    <br />
+    <div class="d-flex justify-content-center">
+      <button
+        class="btn btn-success"
+        *ngIf="!isAuth()"
+        (click)="onSignIn(login, password)"
+      >
+        Connexion
+      </button>
+      <button class="btn btn-danger" *ngIf="isAuth()" (click)="onSignOut()">
+        Déconnexion
+      </button>
+    </div>
+  </div>
+</div>
+<br />

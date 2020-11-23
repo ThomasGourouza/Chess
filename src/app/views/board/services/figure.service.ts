@@ -11,13 +11,15 @@ export class FigureService {
    *
    * @param figures
    */
-  public initFigures(figures: Array<Figure>): void {
+  public initFigures(): Array<Figure> {
+    const figures: Array<Figure> = [];
     this.initPawns(figures);
     this.initKnights(figures);
     this.initBishops(figures);
     this.initRooks(figures);
     this.initQueens(figures);
     this.initKings(figures);
+    return figures;
   }
 
   /**
@@ -25,7 +27,7 @@ export class FigureService {
    *
    */
 
-  public initPawns(figures: Array<Figure>): void {
+  private initPawns(figures: Array<Figure>): void {
     for (let index = 1; index <= 8; index++) {
       // Les pions noirs
       const blackPawn: Figure = this.getPawn(7, index, Color.black);
@@ -38,7 +40,7 @@ export class FigureService {
     }
   }
 
-  public initKnights(figures: Array<Figure>): void {
+  private initKnights(figures: Array<Figure>): void {
     // Les cavaliers noirs
     figures.push(this.getKnight(8, 2, Color.black));
     figures.push(this.getKnight(8, 7, Color.black));
@@ -47,7 +49,7 @@ export class FigureService {
     figures.push(this.getKnight(1, 7, Color.white));
   }
 
-  public initBishops(figures: Array<Figure>): void {
+  private initBishops(figures: Array<Figure>): void {
     // Les fous noirs
     figures.push(this.getBishop(8, 3, Color.black));
     figures.push(this.getBishop(8, 6, Color.black));
@@ -56,7 +58,7 @@ export class FigureService {
     figures.push(this.getBishop(1, 6, Color.white));
   }
 
-  public initRooks(figures: Array<Figure>): void {
+  private initRooks(figures: Array<Figure>): void {
     // Les fous noirs
     figures.push(this.getRook(8, 1, Color.black));
     figures.push(this.getRook(8, 8, Color.black));
@@ -65,14 +67,14 @@ export class FigureService {
     figures.push(this.getRook(1, 8, Color.white));
   }
 
-  public initQueens(figures: Array<Figure>): void {
+  private initQueens(figures: Array<Figure>): void {
     // La dame noire
     figures.push(this.getQueen(8, 4, Color.black));
     // La dame blanche
     figures.push(this.getQueen(1, 4, Color.white));
   }
 
-  public initKings(figures: Array<Figure>): void {
+  private initKings(figures: Array<Figure>): void {
     // Le roi noir
     figures.push(this.getKing(8, 5, Color.black));
     // Le roi blanc
@@ -226,12 +228,12 @@ export enum Color {
   yellow = 'YELLOW',
 }
 export enum FigureName {
-  pawn = 'PAWN',
-  knight = 'KNIGHT',
-  bishop = 'BISHOP',
-  rook = 'ROOK',
-  queen = 'QUEEN',
-  king = 'KING',
+  pawn = 'Pawn',
+  knight = 'Knight',
+  bishop = 'Bishop',
+  rook = 'Rook',
+  queen = 'Queen',
+  king = 'King',
 }
 export enum FigureCode {
   pawn = 'P',

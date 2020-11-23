@@ -20,19 +20,21 @@ td .content {
   left: 0;
   right: 0;
 }
-.hoverClass:hover {
+.playable:hover {
   border-style: solid;
   color: rgb(75, 75, 75);
+  cursor: pointer;
 }
 .black {
-  background-image: url("../../../../assets/img/squares/blackSquare.png");
+  background-image: url("../../../../../assets/img/squares/blackSquare.png");
 }
 .white {
-  background-image: url("../../../../assets/img/squares/whiteSquare.png");
+  background-image: url("../../../../../assets/img/squares/whiteSquare.png");
 }
 .green {
   border-style: solid;
   color: rgb(75, 75, 75);
+  cursor: pointer;
 }
 .red {
   border-style: solid;

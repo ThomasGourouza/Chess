@@ -1,0 +1,55 @@
+<div class="mx-5" *ngIf="figureDisplay">
+  <div class="container">
+    <div class="d-flex justify-content-center">
+      <h2>{{ figureDisplay.name }}</h2>
+    </div>
+    <br />
+    <div class="row">
+      <div class="col"></div>
+      <div class="col d-flex justify-content-center">
+        <table>
+          <tr>
+            <td>
+              <table>
+                <tr>
+                  <td><h3>Français:&nbsp;</h3></td>
+                  <td>
+                    <h3>{{ figureDisplay.frenchName }}</h3>
+                  </td>
+                </tr>
+                <tr>
+                  <td><h3>Code:</h3></td>
+                  <td>
+                    <h3>{{ figureDisplay.code }}</h3>
+                  </td>
+                </tr>
+                <tr>
+                  <td><h3>Valeur:</h3></td>
+                  <td>
+                    <h3>{{ figureDisplay.value }}</h3>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="col">
+        <table>
+          <tr>
+            <td>
+              <img class="fit" [src]="getUrlOfFigure(figureDisplay.code)" />
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="col"></div>
+    </div>
+  </div>
+  <br />
+  <br />
+  <div class="d-flex justify-content-center">
+    <button class="btn btn-info" routerLink="/figures">Retour</button>
+  </div>
+  <br />
+</div>

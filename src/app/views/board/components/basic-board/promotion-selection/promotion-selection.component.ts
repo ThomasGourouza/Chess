@@ -1,5 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { FigureName } from 'src/app/board/services/figure.service';
+import { FigureName } from '../../../services/figure.service';
 
 @Component({
   selector: 'app-promotion-selection',
