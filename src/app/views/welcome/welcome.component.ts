@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { MessagesService } from './services/messages.service';
+import { Message, MessagesService } from './services/messages.service';
 
 @Component({
   selector: 'app-welcome',
@@ -9,27 +9,27 @@ import { MessagesService } from './services/messages.service';
   styleUrls: ['./welcome.component.scss'],
 })
 export class WelcomeComponent implements OnInit, OnDestroy {
-  messages: Array<{ text: string; }> = [];
-  subscription: Subscription;
+  public messages: Array<Message> = [];
+  public subscription: Subscription;
 
-  constructor(private router: Router, private messagesService: MessagesService) {
-    // subscribe to messagesComponent messages
-    this.subscription = this.messagesService.onMessage().subscribe(message => {
-      if (message) {
-          this.messages.push(message);
-      } else {
-          // clear messages when empty message received
-          this.messages = [];
-      }
-  });
-  }
+  constructor(
+    private router: Router,
+    private messagesService: MessagesService
+  ) {}
 
   public ngOnInit(): void {
     this.router.navigate(['/welcome']);
+    // Souscrit aux messages de messagesComponent
+    this.subscription = this.messagesService
+      .onMessage()
+      .subscribe((messagesList: Array<Message>) => {
+        this.messages = messagesList;
+      });
+    this.messagesService.emitMessage();
   }
 
   public ngOnDestroy(): void {
-    // unsubscribe to ensure no memory leaks
+    // Annule la souscription pour éviter la fuite de mémoire
     this.subscription.unsubscribe();
-}
+  }
 }

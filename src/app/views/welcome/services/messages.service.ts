@@ -2,23 +2,34 @@ import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class MessagesService {
+  private messages: Array<Message>;
+  private messagesSubject = new Subject<Array<Message>>();
 
-  constructor() { }
+  constructor() {
+    this.messages = [];
+  }
 
-  private subject = new Subject<{ text: string; }>();
+  public onMessage(): Observable<Array<Message>> {
+    return this.messagesSubject.asObservable();
+  }
 
-    public sendMessage(message: string): void {
-        this.subject.next({ text: message });
-    }
+  public emitMessage(): void {
+    this.messagesSubject.next(this.messages);
+  }
 
-    public clearMessages(): void {
-        this.subject.next();
-    }
+  public sendMessage(messageContent: string): void {
+    this.messages.push({ text: messageContent });
+    this.emitMessage();
+  }
 
-    public onMessage(): Observable<{ text: string; }> {
-        return this.subject.asObservable();
-    }
+  public clearMessages(): void {
+    this.messages = [];
+    this.emitMessage();
+  }
+}
+export interface Message {
+  text: string;
 }

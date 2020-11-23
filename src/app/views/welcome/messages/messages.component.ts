@@ -7,18 +7,18 @@ import { MessagesService } from '../services/messages.service';
   styleUrls: ['./messages.component.scss'],
 })
 export class MessagesComponent implements OnInit {
-  public message: string;
+  public messageContent: string;
   constructor(private messagesService: MessagesService) {}
 
   public ngOnInit(): void {}
 
-  public sendMessage(): void {
-    // send message to subscribers via observable subject
-    this.messagesService.sendMessage(this.message);
+  public sendMessage(messageContent: string): void {
+    // Envoie le message aux 'subscribers' via l'observable 'messagesSubject'
+    this.messagesService.sendMessage(messageContent);
   }
 
   public clearMessages(): void {
-    // clear messages
+    // Efface les messages
     this.messagesService.clearMessages();
   }
 }
