@@ -20,8 +20,12 @@ export class MessagesService {
     this.messagesSubject.next(this.messages);
   }
 
-  public sendMessage(messageContent: string): void {
-    this.messages.push({ text: messageContent });
+  public sendMessage(messageContent: string, name: string): void {
+    const message: Message = {
+      text: messageContent,
+      author: name,
+    };
+    this.messages.push(message);
     this.emitMessage();
   }
 
@@ -32,4 +36,5 @@ export class MessagesService {
 }
 export interface Message {
   text: string;
+  author: string;
 }

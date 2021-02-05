@@ -1,5 +1,5 @@
-
-<app-messages></app-messages>
 <div class="container text-center my-3">
-    <div *ngFor="let message of messages" class="alert alert-sm alert-info">{{message.text}}</div>
+  <div *ngFor="let message of messages" class="alert alert-sm alert-info">
+    <app-message-display [message]="message"></app-message-display>
+  </div>
 </div>

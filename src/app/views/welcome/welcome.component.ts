@@ -1,8 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { Message, MessagesService } from './services/messages.service';
-
+import { Message, MessagesService } from '../messages/services/messages.service';
 @Component({
   selector: 'app-welcome',
   templateUrl: './welcome.component.html',
@@ -25,6 +24,7 @@ export class WelcomeComponent implements OnInit, OnDestroy {
       .subscribe((messagesList: Array<Message>) => {
         this.messages = messagesList;
       });
+    // Après avoir souscrit, on fait émettre le service
     this.messagesService.emitMessage();
   }
 

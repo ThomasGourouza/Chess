@@ -25,12 +25,13 @@ export class BoardComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
-    if (
-      this.boardService.endGameText === '' &&
-      !confirm('Finir la partie plus tard ?')
-    ) {
-      this.router.navigate(['/chess-board']);
-    }
+    // TODO
+    // if (
+    //   this.boardService.endGameText === '' &&
+    //   !confirm('Finir la partie plus tard ?')
+    // ) {
+    //   this.router.navigate(['/chess-board']);
+    // }
   }
 
   /**

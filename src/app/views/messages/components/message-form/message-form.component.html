@@ -1,0 +1,38 @@
+<div class="row">
+  <div class="col-sm-8 col-sm-offset-2">
+    <form (ngSubmit)="onSubmit(messageForm)" #messageForm="ngForm">
+      <div class="form-group">
+        <label for="content"> Message </label>
+        <input
+          type="text"
+          id="content"
+          class="form-control"
+          name="text"
+          ngModel
+          required
+        />
+      </div>
+      <div class="form-group">
+        <label for="author"> Autheur </label>
+        <input
+          type="text"
+          id="author"
+          class="form-control"
+          name="author"
+          [ngModel]="author"
+          required
+        />
+      </div>
+      <button
+        type="submit"
+        class="btn btn-primary"
+        [disabled]="messageForm.invalid"
+      >
+        Enregistrer
+      </button>
+      <button (click)="clearMessages()" class="btn btn-secondary">
+        Effacer les messages
+      </button>
+    </form>
+  </div>
+</div>

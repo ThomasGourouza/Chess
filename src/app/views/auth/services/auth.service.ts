@@ -18,9 +18,11 @@ export class AuthService {
 
   public signIn(login: string, password: string): Promise<boolean> {
     return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(login === 'tom' && password === 'mdp');
-      }, 1000);
+      // TODO
+      // setTimeout(() => {
+      //   resolve(login === 'tom' && password === 'mdp');
+      // }, 1000);
+      resolve(true);
     });
   }
 }

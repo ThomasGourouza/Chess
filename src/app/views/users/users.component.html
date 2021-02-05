@@ -1,0 +1,17 @@
+<div class="mx-5">
+  <div class="d-flex justify-content-center">
+    <ul class="list-group">
+      <li class="list-group-item dark" *ngFor="let user of users">
+        <h3>{{ user.firstName }} {{ user.lastName }}</h3>
+        <p>{{ user.email }}</p>
+        <p>Sport: {{ user.sport }}</p>
+        <p *ngIf="user.languages && user.languages.length > 0">
+          Langues:
+          <span *ngFor="let language of user.languages">
+            {{ language }}
+          </span>
+        </p>
+      </li>
+    </ul>
+  </div>
+</div>

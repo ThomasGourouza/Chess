@@ -1,25 +1,16 @@
 <div class="mx-5 d-flex justify-content-center">
   <div>
     <h2>Authentification</h2>
-    <br />
-    <br />
-    <table>
+    <br /><br />
+    <table *ngIf="!isAuth()">
       <tr>
-        <td>
-          <label for="login">Login &nbsp;</label>
-        </td>
-        <td>
-          <input type="text" id="login" [(ngModel)]="login" />
-        </td>
+        <td><label for="login">Login &nbsp;</label></td>
+        <td><input type="text" id="login" [(ngModel)]="login" /></td>
       </tr>
       <br />
       <tr>
-        <td>
-          <label for="password">Password &nbsp;</label>
-        </td>
-        <td>
-          <input type="password" id="password" [(ngModel)]="password" />
-        </td>
+        <td><label for="password">Password &nbsp;</label></td>
+        <td><input type="password" id="password" [(ngModel)]="password" /></td>
       </tr>
     </table>
     <br />
@@ -35,6 +26,16 @@
         Déconnexion
       </button>
     </div>
+  </div>
+</div>
+<br />
+<div class="mx-5 d-flex justify-content-center">
+  <div *ngIf="!isAuth()">
+    <p><b>Ou</b></p>    
+    <br />
+    <button class="btn btn-success" routerLink="/register">
+      Créer un compte
+    </button>
   </div>
 </div>
 <br />
