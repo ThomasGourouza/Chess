@@ -6,8 +6,7 @@ import { UtilsService } from './services/utils.service';
 
 @Component({
   selector: 'app-board',
-  templateUrl: './board.component.html',
-  styleUrls: ['./board.component.scss'],
+  templateUrl: './board.component.html'
 })
 export class BoardComponent implements OnInit {
   public figures: Array<Figure>;
